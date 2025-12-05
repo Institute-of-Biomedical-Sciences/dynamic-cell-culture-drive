@@ -14,10 +14,11 @@ This repository contains the documentation for building and using a modular flow
 
 
 ### Authors
-Boštjan Vihar<sup>1</sup>, bostjan.vihar@um.si
-Jernej Vajda<sup>1</sup>, jernej.vajda@um.si
-Nejc Klemenčič<sup>2</sup>
-Bine Zgaga<sup>2</sup>
+Boštjan Vihar <sup>1</sup>, bostjan.vihar@um.si
+Jernej Vajda <sup>1</sup>, jernej.vajda@um.si
+Nejc Klemenčič <sup>2</sup>
+Bine Zgaga <sup>2</sup>
+Mihael Miško <sup>2</sup>
 
 1 - Institute of Biomedical Sciences, Faculty of Medicine, University of Maribor, Taborska ulica 8, SI-2000, Maribor
 2 - IRNAS Ltd., Limbuška cesta 76b, SI-2000 Maribor
