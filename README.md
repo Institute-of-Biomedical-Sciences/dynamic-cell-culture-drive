@@ -14,8 +14,8 @@ This repository contains the documentation for building and using a modular flow
 
 
 ### Authors
-Boštjan Vihar <sup>1</sup>, bostjan.vihar@um.si
-Jernej Vajda <sup>1</sup>, jernej.vajda@um.si
+[Boštjan Vihar](mailto:bostjan.vihar@um.si) <sup>1</sup>
+[Jernej Vajda](mailto:jernej.vajda@um.si) <sup>1</sup>
 Nejc Klemenčič <sup>2</sup>
 Bine Zgaga <sup>2</sup>
 Mihael Miško <sup>2</sup>
