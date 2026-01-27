@@ -21,8 +21,11 @@ Bine Zgaga <sup>2</sup>
 Mihael Miško <sup>2</sup>
 
 1 - Institute of Biomedical Sciences, Faculty of Medicine, University of Maribor, Taborska ulica 8, SI-2000, Maribor
-
 2 - IRNAS Ltd., Limbuška cesta 76b, SI-2000 Maribor
+
+
+### Acknowledgements
+This work is supported by the European Comission through the FEASTS project  (Project ID 101136749, call HORIZON-CL6-2023-FARM2FORK-01-13).
 
 ### License
 Shield: [![CC BY-SA 4.0][cc-by-sa-shield]][cc-by-sa]
