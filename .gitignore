@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+.env.local
+
+#node modules
+node_modules/*
+package-lock.json*
+
+
+#timescaledb files
+timescaledb/*
+
+#vscode settings file
+.vscode/*
