@@ -35,15 +35,12 @@ const items = ref([
 <template>
     <div class="layout-topbar">
         <div class="layout-topbar-logo-container">
-            <button class="layout-menu-button layout-topbar-action" @click="toggleMenu">
+            <button class="ml-4 layout-menu-button layout-topbar-action" @click="toggleMenu">
                 <i class="pi pi-bars"></i>
             </button>
             <router-link to="/" class="layout-topbar-logo">
-                <!-- ... existing logo SVG ... -->
-                <svg viewBox="0 0 54 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <!-- ... existing SVG paths ... -->
-                </svg>
-                <span class="text-primary-color font-bold text-2xl">New Harvest</span>
+                <img src="@/assets/images/IoBS.png" alt="IoBS Logo" class="ml-2" style="width: 40px; height: 40px;" />
+                <span style="width: 260px;" class=" text-primary-color font-bold text-xl">Dynamic Cell Culture Drive</span>
             </router-link>
         </div>
         <div class="justify-end flex flex-row gap-2 w-full">

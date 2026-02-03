@@ -4,7 +4,7 @@
       <h1 class="page-title"><span class="text-muted-color">Measurements History</span></h1>
     </div>
 
-    <div class="grid grid-cols-3 m-5 control-grid">
+    <div class="grid grid-cols-3 control-grid">
       <!-- Entry selection + chart -->
       <Card class="col-span-3">
         <template #content>

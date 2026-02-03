@@ -678,40 +678,7 @@
 	color: var(--text-primary);
   }
 
-  .control-grid {
-	display: grid;
-	gap: 1.5rem;
-	min-height: 0;
-	flex: 1;
-  }
 
-
-  .scenarios-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-  }
-
-
-  .quick-actions {
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
-  }
-
-  .quick-actions .btn {
-	width: 100%;
-  }
-
-  .card-body form {
-	display: flex;
-	flex-direction: column;
-	gap: 1rem;
-  }
-
-  .card-body form .btn {
-	width: 100%;
-  }
 
   .alert {
 	position: relative;

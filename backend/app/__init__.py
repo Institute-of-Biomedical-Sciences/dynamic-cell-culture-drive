@@ -1,1 +1,1 @@
-"""New Harvest Control Software backend application."""
+"""Dynamic Cell Culture Drive Control Software backend application."""

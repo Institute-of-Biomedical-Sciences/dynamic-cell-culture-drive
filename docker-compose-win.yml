@@ -1,9 +1,9 @@
 version: "3.9"
 
 services:
-  newharvestdb:
+  dynamic-cell-culture-drive-db:
     image: timescale/timescaledb:latest-pg16
-    container_name: newharvestdb
+    container_name: dynamic-cell-culture-drive-db
     restart: unless-stopped
     ports:
       - "5432:5432"
@@ -12,7 +12,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - newharvestdb_data:/var/lib/postgresql/data
+      - dynamic-cell-culture-drive-db_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/01-init.sql
       - ./schema.sql:/docker-entrypoint-initdb.d/02-schema.sql
     healthcheck:
@@ -20,54 +20,12 @@ services:
       timeout: 2s
       retries: 2
     networks:
-      - newharvest-network
-  # backend:
-  #   build:
-  #     context: ./backend
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "8000:8000"
-  #   environment:
-  #     POSTGRES_USER: ${POSTGRES_USER}
-  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-  #     POSTGRES_DB: ${POSTGRES_DB}
-  #     POSTGRES_HOST: newharvestdb
-  #   privileged: true
-  #   depends_on:
-  #     - newharvestdb
-  #   volumes:
-  #     - ./backend:/app
-  #     - /dev/ttyUSB0:/dev/ttyUSB0
-  #   networks:
-  #     - newharvest-network
-  #   logging:
-  #     driver: "json-file"
-  #     options:
-  #       max-size: "10m"
-  #       max-file: "5"
-  #   restart: unless-stopped
-
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "5173:5173"
-  #   depends_on:
-  #     - backend
-  #   networks:
-  #     - newharvest-network
-  #   logging:
-  #     driver: "json-file"
-  #     options:
-  #       max-size: "10m"
-  #       max-file: "5"
-  #   restart: unless-stopped
+      - dynamic-cell-culture-drive-network
 
 volumes:
-  newharvestdb_data:
-    name: newharvestdb_data
+  dynamic-cell-culture-drive-db_data:
+    name: dynamic-cell-culture-drive-db_data
 
 networks:
-  newharvest-network:
+  dynamic-cell-culture-drive-network:
     driver: bridge
