@@ -46,7 +46,7 @@ const props = defineProps<{
   chartHeight: number | 600;
 }>();
 
-const maxDataPoints = 100;
+const maxDataPoints = 20;
 const websocketUrl =
   (window.location.protocol === "https:" ? "wss://" : "ws://") +
   window.location.hostname +
@@ -76,11 +76,15 @@ const chartOptions = ref({
     type: "line",
     height: 350,
     animations: {
-      enabled: true,
-      easing: "linear",
-      dynamicAnimation: {
-        speed: 1000,
+      enabled: false,
+      animateGradually: {
+        enabled: true,
+        delay: 10,
       },
+      // dynamicAnimation: {
+      //   enabled: true,
+      //   speed: 100,
+      // },
     },
     toolbar: {
       show: true,
@@ -191,22 +195,29 @@ const downloadCsv = (customFilename?: string) => {
   URL.revokeObjectURL(url);
 };
 
-const addPoint = (angle: number, time: number) => {
-  if (angle === undefined || angle === null || isNaN(angle)) {
-    console.warn('Skipping invalid angle', angle);
-    return;
-  }
-  if (!time) {
-    console.warn('Skipping invalid time', time);
-    return;
-  }
-
-  series.value[0].data.push({ x: time, y: angle });
-  fullSeries.value[0].data.push({ x: time, y: angle });
-  if (series.value[0].data.length > 100) {
+const addPoints = (points: Array<{ x: number; y: number }>) => {
+  series.value[0].data.push(...points);
+  fullSeries.value[0].data.push(...points);
+  if (series.value[0].data.length > maxDataPoints) {
     series.value[0].data.shift();
   }
 };
+// const addPoint = (angle: number, time: number) => {
+//   if (angle === undefined || angle === null || isNaN(angle)) {
+//     console.warn('Skipping invalid angle', angle);
+//     return;
+//   }
+//   if (!time) {
+//     console.warn('Skipping invalid time', time);
+//     return;
+//   }
+
+//   series.value[0].data.push({ x: time, y: angle });
+//   fullSeries.value[0].data.push({ x: time, y: angle });
+//   if (series.value[0].data.length > maxDataPoints) {
+//     series.value[0].data.shift();
+//   }
+// };
 
 const setupWebSocket = () => {
   if (socket) {
@@ -225,24 +236,16 @@ const setupWebSocket = () => {
 
     if (msg.type === "tilt") {
       const m = msg.data;
-      if (m && m.angle !== undefined && m.angle !== null && m.time) {
-        addPoint(Number(m.angle), Number(m.time));
-      }
+      addPoints(m.map((m: { time: number; angle: number }) => ({ x: Number(m.time), y: Number(m.angle) })));
     }
 
     if (msg.type === "rotate") {
       const m = msg.data;
-      if (m && m.direction && m.time) {
-        const speed = m.direction === 'cw' ? m.speed : -m.speed;
-        addPoint(speed, Number(m.time));
-      }
+        addPoints(m.map((m: { time: number; speed: number; direction: string }) => ({ x: Number(m.time), y: m.speed * (m.direction === 'cw' ? 1 : -1) })));
     }
-        if (msg.type === "peristaltic") {
+    if (msg.type === "peristaltic") {
       const m = msg.data;
-      if (m && m.direction && m.time) {
-        const speed = m.direction === 'cw' ? 1 * m.speed : -1 * m.speed;
-        addPoint(speed, Number(m.time));
-      }
+      addPoints(m.map((m: { time: number; speed: number; direction: string }) => ({ x: Number(m.time), y: m.speed * (m.direction === 'cw' ? 1 : -1) })));
     }
   } catch (e) {
     console.error("Error parsing WebSocket message:", e);

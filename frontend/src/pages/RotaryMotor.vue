@@ -591,7 +591,7 @@
 	fetchScenarios();
 	statusInterval = window.setInterval(() => {
 	  fetchStatus();
-	}, 1000);
+	}, 2000);
   });
 
   onBeforeUnmount(() => {

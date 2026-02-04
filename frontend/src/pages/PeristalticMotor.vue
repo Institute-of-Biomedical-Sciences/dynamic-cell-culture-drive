@@ -47,40 +47,40 @@
 				  </div>
 				</template>
 				<div v-if="runConfiguration.movements.length > 0" class="grid">
-				  <div class="col-3">
-					  <FloatLabel variant="on" >
-						<InputNumber class="w-full"
-							:style="{ minWidth: '0' }"
-							:min="0"
-							:max="10"
-							:step="0.1"
-							:minFractionDigits="0"
-							:maxFractionDigits="2"
-							v-model="runConfiguration.movements[i-1].flow" />
-					  <label>Flow (mL/min)</label>
-					  </FloatLabel>
-				  </div>
+				<div class="col">
+					<FloatLabel variant="on">
+					<InputNumber class="w-full"
+						:style="{ minWidth: '0' }"
+						:min="0"
+						:max="10"
+						:step="0.1"
+						:minFractionDigits="0"
+						:maxFractionDigits="2"
+						v-model="runConfiguration.movements[i-1].flow" />
+					<label>Flow (mL/min)</label>
+					</FloatLabel>
+				</div>
 
-				  <div class="col-3">
-					  <FloatLabel variant="on" >
-					  <InputNumber
-					  	  :minFractionDigits="0"
-						  :maxFractionDigits="2"
-						  v-model="runConfiguration.movements[i-1].duration" />
-					  <label>Duration (s)</label>
-					  </FloatLabel>
-				  </div>
+				<div class="col">
+					<FloatLabel variant="on">
+					<InputNumber class="w-full"
+						:minFractionDigits="0"
+						:maxFractionDigits="2"
+						v-model="runConfiguration.movements[i-1].duration" />
+					<label>Duration (s)</label>
+					</FloatLabel>
+				</div>
 
-				  <div class="col-6">
-					  <FloatLabel class="w-full" variant="on" >
-					  <Select class="w-full"
-						  v-model="runConfiguration.movements[i-1].direction"
-						  :options="directionOptions"
-						  optionLabel="label"
-						  optionValue="value" />
-					  <label>Direction</label>
-					  </FloatLabel>
-				  </div>
+				<div class="col">
+					<FloatLabel class="w-full" variant="on">
+					<Select class="w-full"
+						v-model="runConfiguration.movements[i-1].direction"
+						:options="directionOptions"
+						optionLabel="label"
+						optionValue="value" />
+					<label>Direction</label>
+					</FloatLabel>
+				</div>
 				</div>
 			  </Fieldset>
 			</div>
@@ -690,7 +690,7 @@ onMounted(() => {
 	fetchScenarios();
 	statusInterval = window.setInterval(() => {
 	fetchStatus();
-	}, 1000);
+	}, 2000);
 });
 
 onBeforeUnmount(() => {

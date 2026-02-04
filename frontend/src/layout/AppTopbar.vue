@@ -14,7 +14,7 @@ const generalStatus = ref(null);
 
 setInterval(async () => {
     generalStatus.value = await generalApi.getGeneralStatus();
-}, 1000);
+}, 2000);
 
 const toggle = (event) => {
     menu.value.toggle(event);
