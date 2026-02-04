@@ -55,7 +55,7 @@ class RotaryMotorHandler:
         self._measurement_queue: Deque[Dict[str, Any]] = deque()
         self._queue_lock = threading.Lock()
         self._current_entry_id: int = None
-        self._save_interval = 0.5  # Save queue to DB every 1 second
+        self._save_interval = 0.5  # Save queue to DB every 0.5 second
         self._save_measurements_task: threading.Thread = None
 
     def initialize(self):

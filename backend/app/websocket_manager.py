@@ -98,45 +98,30 @@ class WebSocketManager:
 
     async def send_measurements(self, measurements: list[Dict[str, Any]]):
         """Send measurements to all connected clients."""
-        for measurement in measurements:
-            await self.broadcast(
-                {
-                    "type": "tilt",
-                    "data": {
-                        "angle": measurement["angle"],
-                        "state": measurement["state"],
-                        "time": measurement["time"],
-                    },
-                }
-            )
+        await self.broadcast(
+            {
+                "type": "tilt",
+                "data": measurements,
+            }
+        )
 
     async def send_rotate_measurements(self, measurements: list[Dict[str, Any]]):
         """Send a rotate measurement update to all connected clients."""
-        for measurement in measurements:
-            await self.broadcast(
-                {
-                    "type": "rotate",
-                    "data": {
-                        "speed": measurement["speed"],
-                        "direction": measurement["direction"],
-                        "time": measurement["time"],
-                    },
-                }
-            )
+        await self.broadcast(
+            {
+                "type": "rotate",
+                "data": measurements,
+            }
+        )
 
     async def send_peristaltic_measurements(self, measurements: list[Dict[str, Any]]):
         """Send peristaltic measurements to all connected clients."""
-        for measurement in measurements:
-            await self.broadcast(
-                {
-                    "type": "peristaltic",
-                    "data": {
-                        "speed": measurement["speed"],
-                        "direction": measurement["direction"],
-                        "time": measurement["time"],
-                    },
-                }
-            )
+        await self.broadcast(
+            {
+                "type": "peristaltic",
+                "data": measurements,
+            }
+        )
 
     async def send_rotate_movement(self, movement: int):
         """Send a rotate movement update to all connected clients."""

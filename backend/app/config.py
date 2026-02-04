@@ -26,8 +26,8 @@ class Settings(BaseSettings):
     # Database
     postgres_user: str = "dynamic-cell-culture-drive_user"
     postgres_password: str = "password"
-    postgres_db: str = "dynamic-cell-culture-drive-db"
-    postgres_host: str = "localhost"
+    postgres_db: str = "dynamic-cell-culture-drive_db"
+    postgres_host: str = "0.0.0.0"
     postgres_port: int = 5432
 
     @property
