@@ -43,6 +43,13 @@ HOST=0.0.0.0
 PORT=8000
 ```
 
+### Run DB Docker compose
+
+```bash
+cd ..
+docker compose up -d --build
+```
+
 ### Run the backend service
 
 ```bash

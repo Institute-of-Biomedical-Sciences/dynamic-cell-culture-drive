@@ -9,6 +9,7 @@ The assembly is divided into two main modules:
 
 - [**Module A**](#module-a-assembly)
 - [**Module B**](#module-b-assembly)
+- [**Module C**](#peristaltic-module-assembly)
 - [**Electronic Box**](#electronic-box)
 
 Follow the steps in order to ensure correct fit and alignment.
@@ -84,6 +85,32 @@ Module B contains the secondary mechanisms and interfaces with Module A.
 - Proper alignment with Module A
 - Smooth actuation
 - No interference between components
+
+---
+
+## Peristaltic Module Assembly
+
+### Description
+
+Peristaltic consists of the peristaltic mechanical structure and mounting features.
+
+### Exploded View
+
+![Peristaltic Module Exploded View](peristaltic-module-explode.png)
+
+### Assembly Steps
+
+1. Identify all Peristaltic Module components using the [BOM](#bill-of-materials-bom).
+2. Assemble the base frame components.
+3. Install bearings and shafts.
+4. Secure fasteners to the specified torque.
+5. Verify free movement and alignment.
+
+### Checks
+
+- No binding in moving parts
+- All fasteners tightened to spec
+- Bearings seated correctly
 
 ---
 

@@ -91,10 +91,11 @@ PGADMIN_PASSWORD=your_pgadmin_password
    docker-compose -f docker-compose-win.yml up --build
    ```
 
-This will start both backend and frontend services:
+This will start both backend and frontend services and the database docker container:
 
 - **Backend**: <http://localhost:8000>
 - **Frontend**: <http://localhost:80>
+- **PostgreSQL DB**
 
 ### Creating a Windows Desktop Shortcut (Optional)
 
