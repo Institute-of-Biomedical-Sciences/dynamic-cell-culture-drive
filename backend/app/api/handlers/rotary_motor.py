@@ -74,7 +74,7 @@ class RotaryMotorHandler:
             self._position_deg = postep256_handler.get_position()
 
             # Configure motor-specific settings
-            self._postep.set_driver_settings(microstep=2)
+            #self._postep.set_driver_settings(microstep=2)
 
             # Update position after settings
             try:
@@ -125,7 +125,7 @@ class RotaryMotorHandler:
                     break
                 self._postep.set_requested_speed(i, direction)
                 self._current_speed = i
-                time.sleep(0.02)
+                time.sleep(0.05)
         elif (
             speed > self._current_speed
             and self._current_speed > 0
@@ -142,7 +142,7 @@ class RotaryMotorHandler:
                     break
                 self._postep.set_requested_speed(i, direction)
                 self._current_speed = i
-                time.sleep(0.02)
+                time.sleep(0.05)
         else:
             for i in range(0, int(speed), 5):
                 self._add_to_measurement_queue(
@@ -155,7 +155,7 @@ class RotaryMotorHandler:
                     break
                 self._postep.set_requested_speed(i, direction)
                 self._current_speed = i
-                time.sleep(0.02)
+                time.sleep(0.05)
 
     def _lower_speed_gradually(self, speed: int):
         """Lower the speed gradually."""
@@ -168,7 +168,7 @@ class RotaryMotorHandler:
             )
             self._postep.set_requested_speed(i)
             self._current_speed = i
-            time.sleep(0.02)
+            time.sleep(0.05)
         self._postep.set_requested_speed(0)
         self._postep.set_run(False)
         self._current_speed = 0
@@ -208,6 +208,7 @@ class RotaryMotorHandler:
 
                         if self._resume_pressed:
                             self._postep.run_sleep(True)
+                            time.sleep(0.1)
                             self._set_requested_speed(
                                 self._movement_speed,
                                 self._current_direction,
@@ -236,7 +237,7 @@ class RotaryMotorHandler:
             self._lower_speed_gradually(self._current_speed)
             self._postep.move_to_stop()
             self._postep.run_sleep(False)
-            time.sleep(0.05)
+            time.sleep(0.1)
             self._send_rotate_stopped_websocket()
 
             self._rotate_motor_running = False

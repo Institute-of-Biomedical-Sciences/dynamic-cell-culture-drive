@@ -327,7 +327,7 @@ class PoStep256USB(object):
 
         self.write_to_postep(data_list)
         received = self.read_from_postep(500)
-        print(list(received))
+        print("Raw read list: ", list(received))
 
         received = list(received)
 
@@ -639,7 +639,7 @@ class PoStep256USB(object):
         settings["fullscale_current"] = round(fsc, 1)
 
         idle_current_reg = received[57:59]
-        print(f"Set idle current: {idle_current_reg}")
+        print(f"Read idle current: {idle_current_reg}")
 
         idle_current = self.reg_val_to_current(idle_current_reg[0], idle_current_reg[1])
         print(f"Calculated current: {idle_current}")
@@ -655,7 +655,8 @@ class PoStep256USB(object):
         settings["overheat_current"] = round(overheat_current, 1)
 
         self.current_settings = received
-
+        
+        print("Current settings: ", self.current_settings)
         return settings
 
     def set_driver_settings(
@@ -688,4 +689,5 @@ class PoStep256USB(object):
             # self.current_settings[40] = new_ctrl_reg
 
         print("Current settings: ", self.current_settings)
+        print("SET ESETTINGS")
         self.write_driver_settings(self.current_settings)

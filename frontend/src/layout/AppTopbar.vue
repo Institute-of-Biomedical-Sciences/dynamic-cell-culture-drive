@@ -46,10 +46,10 @@ const items = ref([
         <div class="justify-end flex flex-row gap-2 w-full">
             <!-- Put the progress bar and the text in a flex row -->
                 <!-- progress and span side by side. also take up 100% of the width -->
-                 <div class="flex flex-row gap-2 w-2">
+                 <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;" class="flex flex-row gap-2 w-2">
                     <div class="w-full flex flex-row gap-2" v-if="generalStatus?.tilt?.is_moving">
                     <ProgressBar mode="indeterminate" style="margin-top: 8px; width: 30%; height: 8px" />
-                    <Tag rounded value="Tilt Motor is moving" />
+                    <Tag style="white-space:nowrap; min-width: max-content; padding: 0.35rem 0.6rem;" rounded value="Tilt Motor is moving" />
                     </div>
                     <div class="w-full flex flex-row gap-2" v-if="generalStatus?.rotary?.is_moving">
                     <ProgressBar mode="indeterminate" style="margin-top: 8px; width: 30%; height: 8px" />
@@ -59,8 +59,8 @@ const items = ref([
                     <ProgressBar mode="indeterminate" style="margin-top: 8px; width: 30%; height: 8px" />
                     <Tag rounded value="Peristaltic Motor is moving" />
                     </div>
-                    <div style="margin-left: 34%;" class=" w-full flex flex-row gap-2" v-if="!generalStatus?.tilt?.is_moving && !generalStatus?.rotary?.is_moving && !generalStatus?.peristaltic?.is_moving">
-                    <Tag rounded severity="info" value="All motors are idle" />
+                    <div style="margin-left: 34%;" class="m w-full flex flex-row gap-2" v-if="!generalStatus?.tilt?.is_moving && !generalStatus?.rotary?.is_moving && !generalStatus?.peristaltic?.is_moving">
+                    <Tag style="white-space:nowrap; min-width: max-content; padding: 0.35rem 0.6rem;" rounded severity="info" value="All motors are idle" />
                     </div>
                 </div>
         </div>

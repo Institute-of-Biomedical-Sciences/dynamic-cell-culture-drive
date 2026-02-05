@@ -92,15 +92,15 @@
 	  </template>
 	  <template #footer>
 		<div class="run-config-footer">
-		  <div class="flex justify-end">
+		  <div class="justify-end">
 			<Button v-if="runConfiguration && !isRotating && !rotatePaused" class="ml-2 btn" severity="secondary" @click="handleExportScenario">Export</Button>
-			<Button v-if="!isRotating && !rotatePaused && scenarios.find(el => el.id === runConfiguration.scenario_id && el.name === runConfiguration.name)" severity="secondary" class="ml-2 btn" @click="handleUpdateScenario">Update Peristaltic Scenario</Button>
-			<Button v-if="!isRotating && !rotatePaused && !scenarios.find(el => el.id === runConfiguration.scenario_id && el.name === runConfiguration.name)" severity="info" class="ml-2 btn" @click="handleSaveScenario">Save Peristaltic Scenario</Button>
-			<Button v-if="!isRotating && !rotatePaused" class="ml-2 btn" @click="rotateMotor">Rotate Motor</Button>
+			<Button v-if="!isRotating && !rotatePaused && scenarios.find(el => el.id === runConfiguration.scenario_id && el.name === runConfiguration.name)" severity="secondary" class="m-2" @click="handleUpdateScenario">Update Scenario</Button>
+			<Button v-if="!isRotating && !rotatePaused && !scenarios.find(el => el.id === runConfiguration.scenario_id && el.name === runConfiguration.name)" severity="info" class="m-2" @click="handleSaveScenario">Save Scenario</Button>
+			<Button v-if="!isRotating && !rotatePaused" class="m-2" @click="rotateMotor">Rotate</Button>
 			<div v-if="isRotating">
-			  <Button v-if="!rotatePaused" class="btn mr-2" severity="info" @click="pauseRotating">Pause Rotating</Button>
-			  <Button v-if="rotatePaused" class="btn mr-2" severity="secondary" @click="resumeRotating">Resume Rotating</Button>
-			  <Button class="btn" severity="danger" @click="stopRotating">Stop Motor</Button>
+			  <Button v-if="!rotatePaused" class="m-2" severity="info" @click="pauseRotating">Pause</Button>
+			  <Button v-if="rotatePaused" class="m-2" severity="secondary" @click="resumeRotating">Resume</Button>
+			  <Button class="m-2" severity="danger" @click="stopRotating">Stop</Button>
 			</div>
 		  </div>
 		</div>

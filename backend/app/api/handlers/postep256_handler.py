@@ -70,14 +70,15 @@ class Postep256Handler:
                 if self._postep.enable_rt_stream():
                     print("PoStep256 motor real-time streaming enabled.")
 
-                self._postep.move_config(
-                    max_speed=max_speed,
-                    max_accel=max_accel,
-                    max_decel=max_decel,
-                    endsw=None,
-                )
 
                 self._postep.get_driver_settings()
+
+                # self._postep.move_config(
+                #     max_speed=max_speed,
+                #     max_accel=max_accel,
+                #     max_decel=max_decel,
+                #     endsw=None,
+                # )
 
                 # Read initial position
                 try:

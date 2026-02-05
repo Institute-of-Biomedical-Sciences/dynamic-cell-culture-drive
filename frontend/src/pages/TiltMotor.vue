@@ -121,7 +121,7 @@
           <!-- make this div be 100% width of parent-->
           <div class="footer-separator"></div>
             <div class="flex justify-end ml-1">
-              <div class="flex justify-end">
+              <div class="justify-end">
                 <Button
                   v-if="runConfiguration && !isTilting && !tiltPaused"
                   class="m-2 btn"
@@ -146,7 +146,8 @@
                   severity="secondary"
                   @click="handleUpdateScenario"
                 >
-                  Update Tilt Scenario
+                <span>Update Scenario</span>
+                  
                 </Button>
 
                 <Button
@@ -155,7 +156,7 @@
                   severity="info"
                   @click="handleSaveScenario"
                 >
-                  Save Tilt Scenario
+                  Save Scenario
                 </Button>
 
                 <Button
@@ -163,7 +164,7 @@
                   class="m-2 btn"
                   @click="tiltMotor"
                 >
-                  Tilt Motor
+                  Tilt
                 </Button>
 
                 <Button
@@ -874,6 +875,9 @@ onBeforeUnmount(() => {
   }
 
 .footer-separator {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
     box-sizing: border-box;
     width: calc(100% + 4rem); /* extend past the card's left/right padding */
     margin: 0 -1rem 0 -2rem;  /* negative margins equal to card horizontal padding */

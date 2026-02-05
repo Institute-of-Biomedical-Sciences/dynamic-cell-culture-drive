@@ -81,10 +81,6 @@ const chartOptions = ref({
         enabled: true,
         delay: 10,
       },
-      // dynamicAnimation: {
-      //   enabled: true,
-      //   speed: 100,
-      // },
     },
     toolbar: {
       show: true,
@@ -202,22 +198,6 @@ const addPoints = (points: Array<{ x: number; y: number }>) => {
     series.value[0].data.shift();
   }
 };
-// const addPoint = (angle: number, time: number) => {
-//   if (angle === undefined || angle === null || isNaN(angle)) {
-//     console.warn('Skipping invalid angle', angle);
-//     return;
-//   }
-//   if (!time) {
-//     console.warn('Skipping invalid time', time);
-//     return;
-//   }
-
-//   series.value[0].data.push({ x: time, y: angle });
-//   fullSeries.value[0].data.push({ x: time, y: angle });
-//   if (series.value[0].data.length > maxDataPoints) {
-//     series.value[0].data.shift();
-//   }
-// };
 
 const setupWebSocket = () => {
   if (socket) {

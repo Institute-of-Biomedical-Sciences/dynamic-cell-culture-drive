@@ -88,7 +88,7 @@ class PeristalticMotorHandler:
             self._position_deg = postep256_handler.get_position()
 
             # Configure motor-specific settings
-            self._postep.set_driver_settings(microstep=2)
+            #self._postep.set_driver_settings(microstep=2)
 
             # Update position after settings
             try:

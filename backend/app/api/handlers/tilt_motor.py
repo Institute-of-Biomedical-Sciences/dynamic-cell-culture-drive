@@ -75,8 +75,8 @@ class TiltMotorHandler:
             self._position_deg = postep256_handler.get_position()
 
             # Configure motor-specific settings
-            self._postep.set_driver_settings(step_mode=4)
-            self._postep.set_run(True)
+            #self._postep.set_driver_settings(step_mode=4)
+            #self._postep.set_run(True)
             time.sleep(0.2)
 
             # Update position after settings
@@ -287,7 +287,9 @@ class TiltMotorHandler:
         if self._is_moving:
             print("Tilt motor is already moving.")
             return False
-
+        self._postep.get_driver_settings()
+        self._postep.set_driver_settings(step_mode=4, microstep=microstepping)
+        time.sleep(0.1)
         entry_id = create_entry(
             name=entry_name,
             tilt_scenario_id=scenario_id,
@@ -295,9 +297,7 @@ class TiltMotorHandler:
         )
 
         self._current_entry_id = entry_id
-        self._postep.run_sleep(True)
-        self._postep.get_driver_settings()
-        self._postep.set_driver_settings(step_mode=4, microstep=microstepping)
+        self._postep.set_run(True)
         time.sleep(0.1)
         self._tilt_motor_running = True
         self._tilt_motor_paused = False
