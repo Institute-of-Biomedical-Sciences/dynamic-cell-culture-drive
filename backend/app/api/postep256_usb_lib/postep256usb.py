@@ -6,6 +6,7 @@ import platform
 import struct
 import time
 
+import usb
 import usb.backend.libusb1
 import usb.core
 import usb.util
@@ -327,9 +328,10 @@ class PoStep256USB(object):
 
         self.write_to_postep(data_list)
         received = self.read_from_postep(500)
-        print("Raw read list: ", list(received))
 
         received = list(received)
+        
+        usb.util.dispose_resources(self.device) # close connection to free usb - reading fails without this line
 
         return received
 
@@ -656,7 +658,6 @@ class PoStep256USB(object):
 
         self.current_settings = received
         
-        print("Current settings: ", self.current_settings)
         return settings
 
     def set_driver_settings(
@@ -689,5 +690,4 @@ class PoStep256USB(object):
             # self.current_settings[40] = new_ctrl_reg
 
         print("Current settings: ", self.current_settings)
-        print("SET ESETTINGS")
         self.write_driver_settings(self.current_settings)
