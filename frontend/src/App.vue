@@ -2,7 +2,7 @@
   <div id="app">
     <router-view />
 
-    <!-- Navigation Confirmation Dialog -->
+    <!-- Shown when router sets navigationConfirmPending (navigating to a motor page). -->
     <Dialog
       v-model:visible="showNavigationDialog"
       modal
@@ -19,49 +19,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, watch } from 'vue'
+import { navigationConfirmPending, confirmMotorNavigation, cancelMotorNavigation } from '@/router'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
 
-const router = useRouter()
 const showNavigationDialog = ref(false)
-let pendingNavigation: (() => void) | null = null
 
-onMounted(() => {
-  router.beforeEach((to, from, next) => {
-    // Skip confirmation for initial load or if route has skipConfirm meta
-    if (from.name === null || to.meta.skipConfirm) {
-      next()
-      return
-    }
-
-    // Skip if navigating to the same route
-    if (to.path === from.path) {
-      next()
-      return
-    }
-    // Store the navigation function and show dialog
-    pendingNavigation = () => next()
-    if (to.name === 'TiltMotor' || to.name === 'RotaryMotor' || to.name === 'PeristalticMotor') {
-      showNavigationDialog.value = true
-    } else {
-      next()
-    }
-  })
-})
+watch(
+  navigationConfirmPending,
+  (pending) => {
+    showNavigationDialog.value = !!pending
+  },
+  { immediate: true }
+)
 
 const confirmNavigation = () => {
   showNavigationDialog.value = false
-  if (pendingNavigation) {
-    pendingNavigation()
-    pendingNavigation = null
-  }
+  confirmMotorNavigation()
 }
 
 const cancelNavigation = () => {
   showNavigationDialog.value = false
-  pendingNavigation = null
+  cancelMotorNavigation()
 }
 </script>
 

@@ -18,9 +18,22 @@
   @update:visible="val => (showFilenameModal = val)"
   @confirm="({ prefix, filename }) => { filenamePrefix = prefix; downloadCsv(filename) }"
 />
+<Toast></Toast>
 </template>
 
 <script setup lang="ts">
+	import Toast from 'primevue/toast';
+	import { useToast } from 'primevue/usetoast';
+	const toast = useToast();
+	const showError = (message: string) => {
+	  toast.add({
+	  severity: 'error', // 'success', 'info', 'warn', 'error'
+	  summary: 'Error',
+	  detail: message,
+	  life: 3000 // milliseconds (optional)
+	  });
+	}
+
 import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import FilenameModal from "./FilenameModal.vue";
 //endTimestamp in ISO 8601 format
@@ -59,14 +72,14 @@ const filenamePrefix = ref('');
 
 const series = ref([
   {
-    name: props.type === 0 ? "Angle" : props.type === 1 ? "RPM" : "Speed",
+    name: props.type === 0 ? "Angle" : props.type === 1 ? "RPM" : "Flow (mL/min)",
     data: [] as Array<{ x: number; y: number }>,
   },
 ]);
 
 const fullSeries = ref([
   {
-    name: props.type === 0 ? "Angle" : props.type === 1 ? "RPM" : "Speed",
+    name: props.type === 0 ? "Angle" : props.type === 1 ? "RPM" : "Flow (mL/min)",
     data: [] as Array<{ x: number; y: number }>,
   },
 ]);
@@ -128,7 +141,7 @@ const chartOptions = ref({
   },
   yaxis: {
   title: {
-    text: props.type === 0 ? "Angle" : props.type === 1 ? "RPM" : "Speed",
+    text: props.type === 0 ? "Angle" : props.type === 1 ? "RPM" : "Flow (mL/min)",
   },
   min: props.minVal !== undefined ? Number((props.minVal).toFixed(0)) + Number((props.minVal / 2).toFixed(0)) : -20,
   max: props.maxVal !== undefined ? Number((props.maxVal).toFixed(0)) + Number((props.maxVal / 2).toFixed(0)) : 20,
@@ -173,12 +186,17 @@ tooltip: {
 });
 
 const downloadCsv = (customFilename?: string) => {
+  if (props.isMoving){
+    showError("Motor is moving. Please stop it before downloading the CSV.");
+    return;
+  }
   const points = series.value[0].data;
-  const header = 'Timestamp (ms),' + (props.type === 0 ? "Angle (deg)" : props.type === 1 ? "RPM" : "Speed") + '\n';
+  const header = 'Timestamp (ms),' + (props.type === 0 ? "Angle (deg)" : props.type === 1 ? "RPM" : "Flow (mL/min)") + '\n';
   const rows = points
-    .map((p) => {
-      return `${(p.x * 1000).toFixed(0)},${p.y}`;
-    })
+  .map((p) => {
+    const yVal = props.type === 2 ? Math.abs(p.y) : p.y;
+    return `${(p.x * 1000).toFixed(0)},${yVal}`;
+  })
     .join('\n');
 
   const csv = header + rows;
@@ -186,7 +204,7 @@ const downloadCsv = (customFilename?: string) => {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = customFilename || 'tilt.csv';
+  a.download = customFilename || (props.type === 0 ? "tilt.csv" : props.type === 1 ? "rotate.csv" : "peristaltic.csv");
   a.click();
   URL.revokeObjectURL(url);
 };
@@ -225,7 +243,8 @@ const setupWebSocket = () => {
     }
     if (msg.type === "peristaltic") {
       const m = msg.data;
-      addPoints(m.map((m: { time: number; speed: number; direction: string }) => ({ x: Number(m.time), y: m.speed * (m.direction === 'cw' ? 1 : -1) })));
+      console.log("m: ", m);
+      addPoints(m.map((m: { time: number; flow: number; direction: string }) => ({ x: Number(m.time), y: m.flow * (m.direction === 'cw' ? 1 : -1) })));
     }
   } catch (e) {
     console.error("Error parsing WebSocket message:", e);

@@ -132,7 +132,7 @@ const chartOptions = computed(() => {
       width: 2,
     },
     title: {
-      text: type === 0 ? "Tilt Angle History" : type === 1 ? "Rotary Speed History" : type === 2 ? "Peristaltic Speed History" : "Movements History",
+      text: type === 0 ? "Tilt Angle History" : type === 1 ? "Rotary Speed History" : type === 2 ? "Peristaltic Flow History" : "Movements History",
       align: "left",
     },
     xaxis: {
@@ -143,7 +143,7 @@ const chartOptions = computed(() => {
     },
     yaxis: {
       title: {
-        text: type === 0 ? "Angle" : "Speed (RPM)",
+        text: type === 0 ? "Angle" : type === 1 ? "Speed (RPM)" : "Flow (mL/min)",
       },
       min: minVal,
       max: maxVal,
@@ -177,13 +177,15 @@ const chartOptions = computed(() => {
 
 const downloadCsv = (customFilename?: string) => {
   const points = seriesData.value;
+  const type = selectedEntry.value?.type ?? 0;
 
-  const header = 'Timestamp (ms),' + (selectedEntry.value?.type === 0 ? "Angle (deg)" : selectedEntry.value?.type === 1 ? "RPM" : "RPM") + '\n';
+  const header = 'Timestamp (ms),' + (type === 0 ? "Angle (deg)" : type === 1 ? "RPM" : "Flow") + '\n';
   const rows = points
-    .map((p) => {
-      return `${p.x * 1000},${p.y}`;
-    })
-    .join('\n');
+  .map((p) => {
+    const yVal = selectedEntry.value?.type === 2 ? Math.abs(p.y) : p.y;
+    return `${p.x * 1000},${yVal}`;
+  })
+  .join('\n');
 
   const csv = header + rows;
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -206,6 +208,7 @@ const fetchEntries = async () => {
     const tilt = await tiltMotorApi.getEntries();
     const rotary = await rotaryMotorApi.getEntries();
     const peristaltic = await peristalticMotorApi.getEntries();
+    console.log("peristaltic: ", peristaltic);
     // combine the two arrays with field tilt_scenario_id and rotary_scenario_id formatt as scenario_id
     // add a field type with value 0 in case of tilt and 1 in case of rotary
     entries.value = [...tilt, ...rotary, ...peristaltic].map((e: any) => ({
@@ -241,11 +244,12 @@ const fetchMeasurements = async (entry: any) => {
       measurements = await rotaryMotorApi.getMeasurements(entry.id, entry.scenario_id, maxDataPoints);
     } else if (entry.type === 2) {
       measurements = await peristalticMotorApi.getMeasurements(entry.id, entry.scenario_id, maxDataPoints);
+      console.log("measurements: ", measurements);
     }
 
     seriesData.value = measurements.map((m) => ({
       x: m.time,
-      y: entry.type === 0 ? m.angle : entry.type === 1 ? m.speed : m.speed,
+      y: entry.type === 0 ? m.angle : entry.type === 1 ? m.speed : Math.abs(m.flow ?? 0),
     }));
   } catch (err: any) {
     measurementsError.value =

@@ -33,6 +33,7 @@
                 <div class="col">
                   <FloatLabel variant="on" >
                   <InputNumber class="w-full"
+                    :style="{ minWidth: '0' }"
                     :min="0"
                     :max="10"
                     :step="0.1"
@@ -50,7 +51,7 @@
                 </div>
 
                 <div class="col">
-                  <FloatLabel variant="on" >
+                  <FloatLabel class="w-full" variant="on" >
                   <Select class="w-full"
                     v-model="runConfiguration.movements[i-1].direction"
                     :options="directionOptions"
@@ -450,10 +451,9 @@
 	timeElapsed.value = performance.now();
 	  const response = await rotaryMotorApi.rotateMotor(entry_name, {...runConfiguration.value});
 	  isRotating.value = response.success
+    showSuccess("Motor started rotating successfully.")
 	} catch (err: any) {
       showError("Error with starting rotating.")
-	} finally {
-    showSuccess("Motor started rotating successfully.")
 	}
   };
 
@@ -461,10 +461,9 @@
 	try {
 	  const response = await rotaryMotorApi.resumeRotate(currentMovement.value);
 	  rotatePaused.value = false;
+    showSuccess("Motor resumed rotating successfully.")
 	} catch (err: any) {
       showError("Error with resuming rotating.")
-	} finally {
-    showSuccess("Motor resumed rotating successfully.")
 	}
   };
 
@@ -472,10 +471,9 @@
 	try {
 	  const response = await rotaryMotorApi.pauseRotate();
 	  rotatePaused.value = true;
+    showSuccess("Motor paused successfully.")
 	} catch (err: any) {
       showError("Error with pausing rotating.")
-	} finally {
-    showSuccess("Motor paused successfully.")
 	}
   };
 
@@ -484,10 +482,9 @@
 	  await rotaryMotorApi.stopRotate();
 	  timeElapsed.value = performance.now() - timeElapsed.value;
 	  rotatePaused.value = false;
+    showSuccess("Motor stopped successfully.")
 	} catch (err: any) {
       showError("Error with stopping rotating.")
-	} finally {
-    showSuccess("Motor stopped successfully.")
 	}
   };
   const fetchScenarios = async () => {
@@ -514,22 +511,22 @@
 	  const response = await rotaryMotorApi.removeRotationScenario(scenarioId);
 	  if (response.success) {
 		fetchScenarios();
+        showSuccess("Scenario deleted successfully.")
 	  }
 	} catch (err: any) {
       showError("Error with deleting scenario.")
-	} finally {
-      showSuccess("Scenario deleted successfully.")
 	}
   };
 
   const handleUpdateScenario = async () => {
     try {
       const response = await rotaryMotorApi.updateRotationScenario(runConfiguration.value.scenario_id, { ...runConfiguration.value});
+      if (response.success) {
+        fetchScenarios();
+        showSuccess("Scenario updated successfully.")
+      }
     } catch (err: any) {
       showError("Error with updating scenario.")
-    } finally {
-      showSuccess("Scenario updated successfully.")
-      fetchScenarios();
     }
   };
   const handleSaveScenario = async () => {
@@ -543,11 +540,10 @@
     if (response.success) {
       await fetchScenarios()
       // optionally: find the new scenario by response.rotation_scenario_id and call loadScenario on it
+      showSuccess("Scenario saved successfully.")
     }
   } catch (err: any) {
     showError("Error with saving scenario.")
-  } finally {
-    showSuccess("Scenario saved successfully.")
   }
 }
 
@@ -726,4 +722,14 @@
   .modal-close:hover {
 	color: var(--text-primary);
   }
+  
+  :deep(.p-inputnumber) {
+  min-width: 0 !important;
+  width: 100%;
+}
+
+:deep(.p-inputnumber .p-inputnumber-input) {
+  min-width: 0 !important;
+  width: 100%;
+}
   </style>

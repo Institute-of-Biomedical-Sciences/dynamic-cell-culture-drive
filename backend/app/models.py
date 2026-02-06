@@ -208,7 +208,7 @@ class PeristalticMeasurement(BaseModel):
 
     id: int
     entry_id: int
-    speed: float
+    flow: float
     direction: str
     time: float
 
@@ -271,3 +271,13 @@ class RPMCalibrationRequest(BaseModel):
 
     duration: int
     rpm: float
+    direction: str
+
+class PeristalticMeasurementResponse(BaseModel):
+    """Peristaltic measurement response model."""
+
+    id: int
+    entry_id: int
+    flow: float
+    direction: str
+    time: float

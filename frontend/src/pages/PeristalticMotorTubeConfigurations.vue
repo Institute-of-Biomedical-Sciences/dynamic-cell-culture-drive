@@ -50,14 +50,37 @@
             @row-edit-save="onRowEditSave"
             :value="tubeConfigurations"
           >
-            <Column field="name" header="Name" />
+            <Column field="name" header="Name" >
+              <template #body="slotProps">
+                {{ slotProps.data.name }}
+              </template>
+              <template #editor="{ data, field }">
+                <template v-if="field === 'name'">
+                  <InputText style="width: 120px; height: 25px; padding: 0px; padding-left: 10px" v-model="data[field]" />
+                </template>
+              </template>
+            </Column>
             <Column field="diameter" header="Diameter">
               <template #body="slotProps">
                 {{
                   slotProps.data.diameter > 0
-                    ? slotProps.data.diameter.toFixed(2)
+                    ? slotProps.data.diameter.toFixed(2) + "mm"
                     : " - "
                 }}
+              </template>
+              <template #editor="{ data, field }">
+                <template v-if="field === 'diameter'">
+                  <InputNumber
+                    style="width: 70px; height: 25px; padding: 0px; margin: 0px"
+                    v-model="data[field]"
+                    :minFractionDigits="0"
+                    :maxFractionDigits="3"
+                    :min="0"
+                    :step="0.001"
+                    autofocus
+                    fluid
+                  />
+                </template>
               </template>
             </Column>
             <Column field="flow_rate" header="mL/rotation">
@@ -79,7 +102,7 @@
                 </template>
               </template>
             </Column>
-            <Column field="preset" header="Preset">
+            <Column field="preset" header="Type">
               <template #body="slotProps">
                 <Tag
                   :value="slotProps.data.preset ? 'Preset' : 'Custom'"

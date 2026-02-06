@@ -50,6 +50,7 @@ export interface PeristalticScenario {
 export interface RPMCalibrationRequest {
   duration: number
   rpm: number
+  direction: string
 }
 
 export interface PeristalticCalibration {

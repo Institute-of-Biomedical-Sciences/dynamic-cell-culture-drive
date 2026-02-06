@@ -580,11 +580,12 @@ const handleUpdateScenario = async () => {
     const response = await tiltMotorApi.updateMoveScenario({
       ...runConfiguration.value,
     });
+    if (response.success) {
+      fetchScenarios();
+      showSuccess("Scenario updated successfully.")
+    }
   } catch (err: any) {
     showError("Error with updating scenario.");
-  } finally {
-    showSuccess("Scenario updated successfully.");
-    fetchScenarios();
   }
 };
 
@@ -629,10 +630,10 @@ const handleExportScenario = () => {
     a.download = `${scenario.name}.json`;
     a.click();
     URL.revokeObjectURL(url);
+    showSuccess("Scenario exported successfully.");
+
   } catch (err: any) {
     showError("Error with exporting scenario.");
-  } finally {
-    showSuccess("Scenario exported successfully.");
   }
 };
 
@@ -742,10 +743,10 @@ const handleFileSelect = (event: any) => {
         microstepping: data.microstepping,
         imported: true,
       });
+      showSuccess("Scenario imported successfully.");
+
     } catch (error) {
       showError("Error with importing scenario.");
-    } finally {
-      showSuccess("Scenario imported successfully.");
     }
   };
 

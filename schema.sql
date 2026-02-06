@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS tilt_measurements (
 CREATE TABLE IF NOT EXISTS peristaltic_measurements (
 	id SERIAL,
 	entry_id INTEGER NOT NULL,
-	speed FLOAT NOT NULL,
+	flow FLOAT NOT NULL,
 	direction TEXT CHECK (direction IN ('cw', 'ccw')) NOT NULL,
 	time float NOT NULL,
 	PRIMARY KEY (id, time)

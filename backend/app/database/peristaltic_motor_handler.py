@@ -46,9 +46,14 @@ def update_tube_configuration(tube_configuration: TubeConfiguration) -> bool:
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                    UPDATE tube_configurations SET flow_rate = %s WHERE name = %s
+                    UPDATE tube_configurations SET name = %s, diameter = %s, flow_rate = %s WHERE name = %s
                     """,
-                    (tube_configuration.flow_rate, tube_configuration.name),
+                    (
+                        tube_configuration.name,
+                        tube_configuration.diameter,
+                        tube_configuration.flow_rate,
+                        tube_configuration.name,
+                    ),
                 )
                 conn.commit()
                 return cur.rowcount > 0
@@ -392,7 +397,7 @@ def create_peristaltic_measurements_batch(measurements: List[Dict[str, Any]]) ->
                 values = [
                     (
                         m["entry_id"],
-                        m["speed"],
+                        m["flow"],
                         m["direction"],
                         m["time"],
                     )
@@ -402,7 +407,7 @@ def create_peristaltic_measurements_batch(measurements: List[Dict[str, Any]]) ->
                 cur.executemany(
                     """
                     INSERT INTO peristaltic_measurements
-                    (entry_id, speed, direction, time)
+                    (entry_id, flow, direction, time)
                     VALUES (%s, %s, %s, %s)
                 """,
                     values,
@@ -423,9 +428,9 @@ def get_measurements(
     with db.get_cursor() as cur:
         # Use a subquery to get the most recent N measurements, then order them ASC for display
         query = """
-            SELECT id, entry_id, speed, direction, time
+            SELECT id, entry_id, flow, direction, time
             FROM (
-                SELECT id, entry_id, speed, direction, time
+                SELECT id, entry_id, flow, direction, time
                 FROM peristaltic_measurements
                 WHERE 1=1
         """

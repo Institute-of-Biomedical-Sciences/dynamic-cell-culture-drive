@@ -76,11 +76,18 @@
 											<label for="on_label">Unit</label>
 											</FloatLabel>
 										</div>
+										<div class="col-12">
+											<FloatLabel class="w-full mb-3" variant="on">
+												<Select class="w-full" :options="directionOptions" optionLabel="label" optionValue="value" v-model="peristalticMotorCalibration.direction" />
+												<label for="on_label">Direction Selection</label>
+											</FloatLabel>
+										</div>
+										<div style="height: 300px;"></div>
 
 									</div>
 									<div class="flex mt-2 pt-6 justify-between">
 										<Button label="Back" severity="secondary" icon="pi pi-arrow-left" @click="activateCallback('1'); durationProgress = 0" />
-										<Button label="Next" icon="pi pi-arrow-right" iconPos="right" @click="setCalibrationDuration(); activateCallback('3'); durationProgress = 0" />
+										<Button :disabled="peristalticMotorCalibration.duration === null || peristalticMotorCalibration.duration < 0" label="Next" icon="pi pi-arrow-right" iconPos="right" @click="setCalibrationDuration(); activateCallback('3'); durationProgress = 0" />
 									</div>
 								</StepPanel>
 								<StepPanel v-slot="{ activateCallback }" value="3">
@@ -90,7 +97,7 @@
 											<label for="on_label">Low RPM</label>
 										</FloatLabel>
 										<div class="flex w-full justify-end">
-											<Button class="mt-8 mr-2" label="Start" severity="primary" icon="pi pi-play-circle" @click="startRPMCalibration(peristalticMotorCalibration.low_rpm, peristalticMotorCalibration.duration)" />
+											<Button class="mt-8 mr-2" label="Start" severity="primary" icon="pi pi-play-circle" @click="startRPMCalibration(peristalticMotorCalibration.low_rpm, peristalticMotorCalibration.duration, peristalticMotorCalibration.direction)" />
 											<Button class="mt-8"  label="Stop" severity="secondary" icon="pi pi-stop-circle" @click="stopRPMCalibration()" />
 										</div>
 										<FloatLabel class="w-full mt-5" variant="on">
@@ -105,7 +112,7 @@
 									</div>
 									<div class="flex pt-6 justify-between">
 										<Button label="Back" severity="secondary" icon="pi pi-arrow-left" @click="activateCallback('2'); durationProgress = 0" />
-										<Button :disabled="durationProgress < 100" label="Next" icon="pi pi-arrow-right" iconPos="right" @click="activateCallback('4'); durationProgress = 0" />
+										<Button :disabled="durationProgress < 100 || peristalticMotorCalibration.low_rpm_volume === null || peristalticMotorCalibration.low_rpm_volume < 0" label="Next" icon="pi pi-arrow-right" iconPos="right" @click="activateCallback('4'); durationProgress = 0" />
 									</div>
 								</StepPanel>
 								<StepPanel v-slot="{ activateCallback }" value="4">
@@ -115,7 +122,7 @@
 											<label for="on_label">High RPM</label>
 										</FloatLabel>
 										<div class="flex w-full justify-end">
-											<Button class="mt-8 mr-2" label="Start" severity="primary" icon="pi pi-play-circle" @click="startRPMCalibration(peristalticMotorCalibration.high_rpm, peristalticMotorCalibration.duration)" />
+											<Button class="mt-8 mr-2" label="Start" severity="primary" icon="pi pi-play-circle" @click="startRPMCalibration(peristalticMotorCalibration.high_rpm, peristalticMotorCalibration.duration, peristalticMotorCalibration.direction)" />
 											<Button class="mt-8" label="Stop" severity="secondary" icon="pi pi-stop-circle" @click="stopRPMCalibration()" />
 										</div>
 										<FloatLabel class="w-full mt-5" variant="on">
@@ -130,7 +137,7 @@
 									</div>
 									<div class="flex pt-6 justify-between">
 										<Button label="Back" severity="secondary" icon="pi pi-arrow-left" @click="activateCallback('3'); durationProgress = 0" />
-										<Button :disabled="durationProgress < 100" label="Next" icon="pi pi-arrow-right" iconPos="right" @click="activateCallback('5'); durationProgress = 0; computeSlope()" />
+										<Button :disabled="durationProgress < 100 || peristalticMotorCalibration.high_rpm_volume === null || peristalticMotorCalibration.high_rpm_volume < 0" label="Next" icon="pi pi-arrow-right" iconPos="right" @click="activateCallback('5'); durationProgress = 0; computeSlope()" />
 									</div>
 								</StepPanel>
 								<StepPanel v-slot="{ activateCallback }" value="5">
@@ -184,6 +191,8 @@
 	import Toast from 'primevue/toast';
 	import { useToast } from 'primevue/usetoast';
 	const toast = useToast();
+	import { useRouter } from 'vue-router';
+	const router = useRouter();
 	const showSuccess = (message: string) => {
 	  toast.add({
 	  severity: 'success', // 'success', 'info', 'warn', 'error'
@@ -207,8 +216,13 @@
 		high_rpm_volume: null,
 		duration: null,
 		name: null,
+		direction: null,
 	});
 
+	const directionOptions = ref([
+		{ label: 'Clockwise', value: 'cw' },
+		{ label: 'Counterclockwise', value: 'ccw' },
+	]);
 	const durationOptions = ref([
 		{ label: 'Seconds', value: 's' },
 		{ label: 'Minutes', value: 'm' },
@@ -233,7 +247,7 @@
 			peristalticMotorCalibration.value.duration = peristalticMotorCalibration.value.duration * 60;
 		}
 	};
-	const startRPMCalibration = async (rpm: number, duration: number) => {
+	const startRPMCalibration = async (rpm: number, duration: number, direction: string) => {
 		try {
 			// Reset progress
 			durationProgress.value = 0;
@@ -244,7 +258,7 @@
 						// Start the progress timer
 			startProgressTimer();
 			// Start the API call
-			await peristalticMotorApi.startRPMCalibration({duration, rpm});
+			await peristalticMotorApi.startRPMCalibration({duration, rpm, direction});
 
 
 		} catch (error) {
@@ -404,11 +418,12 @@ const series = computed(() => {
 			calibrationLink.download = `${peristalticMotorCalibration.value.name}.json`;
 			calibrationLink.click();
 			URL.revokeObjectURL(calibrationUrl);
+
+			showSuccess('Calibration file downloaded successfully');
+			router.push('/peristaltic-motor');
 		} catch (error) {
 			console.error('Error downloading calibration file:', error);
 			showError('Error downloading calibration file');
-		} finally{
-			showSuccess('Calibration file downloaded successfully');
 		}
 	}
 

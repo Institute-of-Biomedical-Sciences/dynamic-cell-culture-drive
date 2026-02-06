@@ -9,7 +9,7 @@ from app.models import (
     PeristalticRotateRequest,
     PeristalticScenario,
     PeristalticSlopeCompute,
-    RotaryMeasurementResponse,
+    PeristalticMeasurementResponse,
     RPMCalibrationRequest,
     TubeConfiguration,
     User,
@@ -33,6 +33,7 @@ def calibrate_rotate_motor(
         success = peristaltic_motor_handler.start_rpm_calibration(
             duration=request.duration,
             rpm=request.rpm,
+            direction=request.direction,
         )
         return {"success": success, "message": "Peristaltic motor calibrated."}
     except ValueError as e:
@@ -365,7 +366,7 @@ def get_peristaltic_entries(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/measurements", response_model=list[RotaryMeasurementResponse])
+@router.get("/measurements", response_model=list[PeristalticMeasurementResponse])
 def get_measurements(
     entry_id: str = Query(..., description="Filter by entry ID (required)"),
     limit: int = Query(1000, description="Maximum number of results"),
@@ -377,10 +378,10 @@ def get_measurements(
             entry_id=entry_id, limit=limit
         )
         return [
-            RotaryMeasurementResponse(
+            PeristalticMeasurementResponse(
                 id=m["id"],
                 entry_id=m["entry_id"],
-                speed=m["speed"],
+                flow=m["flow"],
                 direction=m["direction"],
                 time=m["time"],
             )
