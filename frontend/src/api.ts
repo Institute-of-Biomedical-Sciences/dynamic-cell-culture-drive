@@ -62,6 +62,7 @@ export interface PeristalticCalibration {
   high_rpm_volume: number
   slope: number
   name: string
+  diameter: number
 }
 
 export interface PeristalticSlopeCompute {
@@ -86,6 +87,7 @@ export interface PeristalticMotorCalibrationRequest {
   low_rpm_volume: number
   high_rpm_volume: number
   name: string
+  diameter: number
 }
 export interface Movement {
   duration: number | null

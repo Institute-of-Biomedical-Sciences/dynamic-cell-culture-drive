@@ -41,6 +41,13 @@ git checkout v<version-number>
 ```
 Replace `version-number` with the desired release version (for example, `v1.2.3`).
 
+### Database Schema Updates
+
+Some releases may include changes to the database schema.
+If a schema change is introduced, the database must be updated accordingly.
+
+In such cases, run the provided database migration script `migration.sql` for this purpose before starting the service. This ensures compatibility between the application and the database schema and prevents runtime errors.
+
 ## Notes
 
 - GitHub releases are based on tags; checking out a tag places the repository in a detached HEAD state.

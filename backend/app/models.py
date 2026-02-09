@@ -234,6 +234,7 @@ class PeristalticCalibration(BaseModel):
     high_rpm_volume: float
     slope: float
     name: str
+    diameter: float
 
 
 class PeristalticSlopeCompute(BaseModel):
@@ -264,6 +265,7 @@ class PeristalticMotorCalibrationRequest(BaseModel):
     low_rpm_volume: float
     high_rpm_volume: float
     name: str
+    diameter: float
 
 
 class RPMCalibrationRequest(BaseModel):

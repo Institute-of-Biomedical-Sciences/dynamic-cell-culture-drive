@@ -504,7 +504,15 @@
 		  fetchScenarios();
 		}
 	  } catch (err: any) {
-		showError("Error with saving scenario.")
+		if (err.response.status === 500) {
+		  showError("Error with saving scenario. Scenario name is required.");
+		}
+		else if (err.response.status === 422) {
+		  showError("Error with saving scenario. Fields missing.");
+		}
+		else {
+		  showError("Error with saving scenario.");
+		}
 	  }
 	};
 

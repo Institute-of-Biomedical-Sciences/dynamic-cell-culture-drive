@@ -191,6 +191,7 @@ class PeristalticMotorHandler:
         low_rpm_volume: float,
         high_rpm_volume: float,
         name: str,
+        diameter: float,
     ):
         """Save calibration data."""
         # New slope calculation using linear regression
@@ -214,6 +215,7 @@ class PeristalticMotorHandler:
             high_rpm_volume=high_rpm_volume,
             slope=slope,
             name=name,
+            diameter=diameter,
         )
         return slope
     
@@ -259,6 +261,7 @@ class PeristalticMotorHandler:
                 )
                 if self._stop_pressed or self._pause_pressed:
                     self._lower_speed_gradually(i, direction)
+                    self._postep.run_sleep(False)
                     break
                 self._postep.set_requested_speed(i, direction)
                 self._current_speed = i
@@ -279,6 +282,7 @@ class PeristalticMotorHandler:
                 )
                 if self._stop_pressed or self._pause_pressed:
                     self._lower_speed_gradually(i, direction)
+                    self._postep.run_sleep(False)
                     break
                 self._postep.set_requested_speed(i, direction)
                 self._current_speed = i
@@ -297,6 +301,7 @@ class PeristalticMotorHandler:
                 )
                 if self._stop_pressed or self._pause_pressed:
                     self._lower_speed_gradually(i, direction)
+                    self._postep.run_sleep(False)
                     break
                 self._postep.set_requested_speed(i, direction)
                 self._current_speed = i
@@ -333,6 +338,7 @@ class PeristalticMotorHandler:
                         break
                     if self._pause_pressed or self._rotate_motor_paused:
                         self._lower_speed_gradually(self._current_speed, self._current_direction)
+                        print("JE OD TU?")
                         self._postep.run_sleep(False)
                         while self._rotate_motor_paused:
                             if self._stop_pressed:
@@ -353,14 +359,13 @@ class PeristalticMotorHandler:
                                 self._current_direction,
                                 self._current_direction,
                             )
-                            if self._stop_pressed or self._pause_pressed:
-                                break
                             if movement.duration > 0:
                                 movement.duration = (
                                     movement.duration - self._movement_remaining_time
                                 )
                             self._resume_pressed = False
                             self._pause_pressed = False
+                            print("se to sploh izvede")
                             self._rotate_motor_paused = False
                             self._movement_start_time = time.time()
                             continue
@@ -368,7 +373,7 @@ class PeristalticMotorHandler:
                     stream_data = self._postep.read_stream()
                     if stream_data and "pos" in stream_data:
                         self._position_deg = stream_data["pos"]
-                        if self._current_entry_id is not None:
+                        if self._current_entry_id is not None and self._current_speed > 0:
                             rpm_current = self._movement_speed / FLOW_RATIO_CONSTANT
                             flow_current = rpm_current * self._calibration_flow_ratio  # mL/min
                             self._add_to_measurement_queue(
@@ -383,8 +388,11 @@ class PeristalticMotorHandler:
             self._postep.run_sleep(False)
             time.sleep(0.05)
             self._send_peristaltic_stopped_websocket()
-
             self._rotate_motor_running = False
+            self._stop_pressed = False
+            self._pause_pressed = False
+            self._rotate_motor_paused = False
+            self._resume_pressed = False
             self._is_moving = False
             self._motor_status = MotorStatus.IDLE
             self._rotate_motor_start_time = 0

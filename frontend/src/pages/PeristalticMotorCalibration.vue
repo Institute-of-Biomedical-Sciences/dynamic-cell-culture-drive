@@ -65,21 +65,27 @@
 								<StepPanel v-slot="{ activateCallback }" value="2">
 									<div class="mt-3 grid h-100">
 										<div class="col-10">
-											<FloatLabel class="w-full mb-3" variant="on">
+											<FloatLabel class="w-full mb-1" variant="on">
 												<InputNumber class="w-full" :min="0" :max="100" :step="1" v-model="peristalticMotorCalibration.duration" />
 												<label for="on_label">Calibration Duration</label>
 											</FloatLabel>
 										</div>
 										<div class="col-2">
-											<FloatLabel class="w-full mb-3" variant="on">
+											<FloatLabel class="w-full mb-1" variant="on">
 											<Select class="w-full" :options="durationOptions" optionLabel="label" optionValue="value" v-model="selectedTimeUnit" />
 											<label for="on_label">Unit</label>
 											</FloatLabel>
 										</div>
 										<div class="col-12">
-											<FloatLabel class="w-full mb-3" variant="on">
+											<FloatLabel class="w-full mb-1" variant="on">
 												<Select class="w-full" :options="directionOptions" optionLabel="label" optionValue="value" v-model="peristalticMotorCalibration.direction" />
 												<label for="on_label">Direction Selection</label>
+											</FloatLabel>
+										</div>
+										<div class="col-12">
+											<FloatLabel class="w-full mb-1" variant="on">
+												<InputNumber class="w-full" :minFractionDigits="0" :maxFractionDigits="3" :step="0.01" v-model="peristalticMotorCalibration.diameter" />
+												<label for="on_label">Tube Diameter</label>
 											</FloatLabel>
 										</div>
 										<div style="height: 300px;"></div>
@@ -217,6 +223,7 @@
 		duration: null,
 		name: null,
 		direction: null,
+		diameter: null,
 	});
 
 	const directionOptions = ref([
@@ -409,6 +416,7 @@ const series = computed(() => {
 				low_rpm_volume: peristalticMotorCalibration.value.low_rpm_volume,
 				high_rpm_volume: peristalticMotorCalibration.value.high_rpm_volume,
 				duration: peristalticMotorCalibration.value.duration,
+				diameter: peristalticMotorCalibration.value.diameter,
 			};
 			const calibrationJson = JSON.stringify(calibrationData);
 			const calibrationBlob = new Blob([calibrationJson], { type: 'application/json' });
@@ -423,7 +431,7 @@ const series = computed(() => {
 			router.push('/peristaltic-motor');
 		} catch (error) {
 			console.error('Error downloading calibration file:', error);
-			showError('Error downloading calibration file');
+			showError('Error downloading calibration file. Filename is required.');
 		}
 	}
 

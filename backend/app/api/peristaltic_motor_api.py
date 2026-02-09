@@ -93,6 +93,7 @@ def calibrate_motor(
             low_rpm_volume=request.low_rpm_volume,
             high_rpm_volume=request.high_rpm_volume,
             name=request.name,
+            diameter=request.diameter,
         )
         return {
             "success": True,

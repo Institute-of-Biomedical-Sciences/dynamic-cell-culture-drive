@@ -16,7 +16,7 @@ const openReleasePage = () => {
   window.open('https://github.com/Institute-of-Biomedical-Sciences/dynamic-cell-culture-drive/releases/latest', '_blank');
 };
 
-const url = `https://api.github.com/repos/IRNAS/LBM_Zephyr/releases/latest`;
+const url = `https://api.github.com/repos/Institute-of-Biomedical-Sciences/dynamic-cell-culture-drive/releases/latest`;
 async function checkLatestRelease() {
   const res = await fetch(url, {
     headers: {

@@ -123,6 +123,8 @@ class RotaryMotorHandler:
                 )
                 if self._stop_pressed or self._pause_pressed:
                     self._lower_speed_gradually(i, direction)
+                    self._postep.run_sleep(False)
+                    
                     break
                 self._postep.set_requested_speed(i, direction)
                 self._current_speed = i
@@ -141,6 +143,7 @@ class RotaryMotorHandler:
                 )
                 if self._stop_pressed or self._pause_pressed:
                     self._lower_speed_gradually(i, direction)
+                    self._postep.run_sleep(False)
                     break
                 self._postep.set_requested_speed(i, direction)
                 self._current_speed = i
@@ -157,6 +160,7 @@ class RotaryMotorHandler:
                 )
                 if self._stop_pressed or self._pause_pressed:
                     self._lower_speed_gradually(i, direction)
+                    self._postep.run_sleep(False)
                     break
                 self._postep.set_requested_speed(i, direction)
                 self._current_speed = i
@@ -222,8 +226,6 @@ class RotaryMotorHandler:
                                     self._current_direction,
                                     self._current_direction,
                                 )
-                                if self._stop_pressed or self._pause_pressed:
-                                    break
                                 if movement.duration > 0:
                                     movement.duration = (
                                         movement.duration - self._movement_remaining_time
@@ -237,7 +239,7 @@ class RotaryMotorHandler:
                     stream_data = self._postep.read_stream()
                     if stream_data and "pos" in stream_data:
                         self._position_deg = stream_data["pos"]
-                        if self._current_entry_id is not None:
+                        if self._current_entry_id is not None and self._current_speed > 0:
                             self._add_to_measurement_queue(
                                 entry_id=self._current_entry_id,
                                 speed=movement.rpm,

@@ -113,6 +113,7 @@ def save_peristaltic_calibration(
     high_rpm_volume: float,
     slope: float,
     name: str,
+    diameter: float,
 ):
     """Save calibration data."""
     try:
@@ -120,8 +121,8 @@ def save_peristaltic_calibration(
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                    INSERT INTO peristaltic_calibrations (duration, low_rpm, high_rpm, low_rpm_volume, high_rpm_volume, slope, name)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO peristaltic_calibrations (duration, low_rpm, high_rpm, low_rpm_volume, high_rpm_volume, slope, name, diameter)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                 """,
                     (
                         duration,
@@ -131,6 +132,7 @@ def save_peristaltic_calibration(
                         high_rpm_volume,
                         slope,
                         name,
+                        diameter,
                     ),
                 )
                 conn.commit()
@@ -147,11 +149,12 @@ def update_peristaltic_calibration(calibration: PeristalticCalibration):
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                    UPDATE peristaltic_calibrations SET name= %s, slope = %s WHERE id = %s
+                    UPDATE peristaltic_calibrations SET name= %s, slope = %s, diameter = %s WHERE id = %s
                     """,
                     (
                         calibration.name,
                         calibration.slope,
+                        calibration.diameter,
                         calibration.id
                     ),
                 )
@@ -167,7 +170,7 @@ def get_peristaltic_calibration(name: str) -> PeristalticCalibration:
     with db.get_cursor() as cur:
         cur.execute(
             """
-            SELECT id, duration, low_rpm, high_rpm, low_rpm_volume, high_rpm_volume, slope, name
+            SELECT id, duration, low_rpm, high_rpm, low_rpm_volume, high_rpm_volume, slope, name, diameter
             FROM peristaltic_calibrations WHERE name = %s
         """,
             (name,),
@@ -180,7 +183,7 @@ def get_peristaltic_calibrations() -> List[PeristalticCalibration]:
     with db.get_cursor() as cur:
         cur.execute(
             """
-            SELECT id, duration, low_rpm, high_rpm, low_rpm_volume, high_rpm_volume, slope, name
+            SELECT id, duration, low_rpm, high_rpm, low_rpm_volume, high_rpm_volume, slope, name, diameter
             FROM peristaltic_calibrations
         """
         )
