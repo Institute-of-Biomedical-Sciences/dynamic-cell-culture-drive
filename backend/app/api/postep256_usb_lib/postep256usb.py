@@ -330,8 +330,10 @@ class PoStep256USB(object):
         received = self.read_from_postep(500)
 
         received = list(received)
-        
-        usb.util.dispose_resources(self.device) # close connection to free usb - reading fails without this line
+
+        usb.util.dispose_resources(
+            self.device
+        )  # close connection to free usb - reading fails without this line
 
         return received
 
@@ -657,7 +659,7 @@ class PoStep256USB(object):
         settings["overheat_current"] = round(overheat_current, 1)
 
         self.current_settings = received
-        
+
         return settings
 
     def set_driver_settings(

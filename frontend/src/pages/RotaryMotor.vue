@@ -730,7 +730,7 @@
   .modal-close:hover {
 	color: var(--text-primary);
   }
-  
+
   :deep(.p-inputnumber) {
   min-width: 0 !important;
   width: 100%;

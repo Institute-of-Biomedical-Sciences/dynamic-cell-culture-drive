@@ -74,7 +74,7 @@ class RotaryMotorHandler:
             self._position_deg = postep256_handler.get_position()
 
             # Configure motor-specific settings
-            #self._postep.set_driver_settings(microstep=2)
+            # self._postep.set_driver_settings(microstep=2)
 
             # Update position after settings
             try:
@@ -124,7 +124,7 @@ class RotaryMotorHandler:
                 if self._stop_pressed or self._pause_pressed:
                     self._lower_speed_gradually(i, direction)
                     self._postep.run_sleep(False)
-                    
+
                     break
                 self._postep.set_requested_speed(i, direction)
                 self._current_speed = i
@@ -167,16 +167,18 @@ class RotaryMotorHandler:
                 time.sleep(0.05)
         return
 
-    def _lower_speed_gradually(self, speed: int, direction: str, send_measurements: bool = True):
+    def _lower_speed_gradually(
+        self, speed: int, direction: str, send_measurements: bool = True
+    ):
         """Lower the speed gradually."""
         for i in range(speed, 0, -5):
             if send_measurements:
                 self._add_to_measurement_queue(
-                entry_id=self._current_entry_id,
-                speed=i / 100,
-                direction=self._current_direction,
-                time=time.time() - self._rotate_motor_start_time,
-            )
+                    entry_id=self._current_entry_id,
+                    speed=i / 100,
+                    direction=self._current_direction,
+                    time=time.time() - self._rotate_motor_start_time,
+                )
             self._postep.set_requested_speed(i, direction)
             self._current_speed = i
             time.sleep(0.05)
@@ -198,7 +200,6 @@ class RotaryMotorHandler:
                 )
                 self._current_direction = movement.direction
 
-
                 while (
                     time.time() - self._movement_start_time < movement.duration
                     or movement.duration == 0
@@ -206,7 +207,9 @@ class RotaryMotorHandler:
                     if self._stop_pressed:
                         break
                     if self._pause_pressed or self._rotate_motor_paused:
-                        self._lower_speed_gradually(self._current_speed, self._current_direction)
+                        self._lower_speed_gradually(
+                            self._current_speed, self._current_direction
+                        )
                         self._postep.run_sleep(False)
                         while self._rotate_motor_paused:
                             if self._stop_pressed:
@@ -228,7 +231,8 @@ class RotaryMotorHandler:
                                 )
                                 if movement.duration > 0:
                                     movement.duration = (
-                                        movement.duration - self._movement_remaining_time
+                                        movement.duration
+                                        - self._movement_remaining_time
                                     )
                                 self._resume_pressed = False
                                 self._pause_pressed = False
@@ -239,14 +243,17 @@ class RotaryMotorHandler:
                     stream_data = self._postep.read_stream()
                     if stream_data and "pos" in stream_data:
                         self._position_deg = stream_data["pos"]
-                        if self._current_entry_id is not None and self._current_speed > 0:
+                        if (
+                            self._current_entry_id is not None
+                            and self._current_speed > 0
+                        ):
                             self._add_to_measurement_queue(
                                 entry_id=self._current_entry_id,
                                 speed=movement.rpm,
                                 direction=self._current_direction,
                                 time=time.time() - self._rotate_motor_start_time,
                             )
-                            
+
             self._lower_speed_gradually(self._current_speed, self._current_direction)
             self._postep.move_to_stop()
             self._postep.run_sleep(False)

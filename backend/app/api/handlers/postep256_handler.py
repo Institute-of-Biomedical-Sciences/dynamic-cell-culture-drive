@@ -71,7 +71,6 @@ class Postep256Handler:
                 if self._postep.enable_rt_stream():
                     print("PoStep256 motor real-time streaming enabled.")
 
-
                 self._postep.get_driver_settings()
 
                 # self._postep.move_config(

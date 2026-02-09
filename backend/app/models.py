@@ -275,6 +275,7 @@ class RPMCalibrationRequest(BaseModel):
     rpm: float
     direction: str
 
+
 class PeristalticMeasurementResponse(BaseModel):
     """Peristaltic measurement response model."""
 

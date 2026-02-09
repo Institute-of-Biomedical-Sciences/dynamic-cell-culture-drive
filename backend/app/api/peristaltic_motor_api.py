@@ -5,11 +5,11 @@ from app.auth import get_current_active_user
 from app.models import (
     EntryResponse,
     PeristalticCalibration,
+    PeristalticMeasurementResponse,
     PeristalticMotorCalibrationRequest,
     PeristalticRotateRequest,
     PeristalticScenario,
     PeristalticSlopeCompute,
-    PeristalticMeasurementResponse,
     RPMCalibrationRequest,
     TubeConfiguration,
     User,

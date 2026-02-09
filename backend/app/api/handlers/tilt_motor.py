@@ -75,8 +75,8 @@ class TiltMotorHandler:
             self._position_deg = postep256_handler.get_position()
 
             # Configure motor-specific settings
-            #self._postep.set_driver_settings(step_mode=4)
-            #self._postep.set_run(True)
+            # self._postep.set_driver_settings(step_mode=4)
+            # self._postep.set_run(True)
             time.sleep(0.2)
 
             # Update position after settings

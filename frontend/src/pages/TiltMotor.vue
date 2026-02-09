@@ -147,7 +147,7 @@
                   @click="handleUpdateScenario"
                 >
                 <span>Update Scenario</span>
-                  
+
                 </Button>
 
                 <Button

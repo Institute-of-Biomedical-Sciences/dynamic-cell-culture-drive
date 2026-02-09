@@ -155,7 +155,7 @@ def update_peristaltic_calibration(calibration: PeristalticCalibration):
                         calibration.name,
                         calibration.slope,
                         calibration.diameter,
-                        calibration.id
+                        calibration.id,
                     ),
                 )
                 conn.commit()
