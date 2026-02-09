@@ -69,7 +69,7 @@
                 }}
               </template>
               <template #editor="{ data, field }">
-                <template v-if="field === 'diameter'">
+                <template v-if="field === 'diameter' && data.preset">
                   <InputNumber
                     style="width: 70px; height: 25px; padding: 0px; margin: 0px"
                     v-model="data[field]"
@@ -301,11 +301,12 @@ const onRowEditSave = async (event: any) => {
       response = await peristalticMotorApi.updateTubeConfiguration(newData);
     } else {
       let calibrationData = calibrations.value.find(
-        (calibration) => calibration.name === newData.name,
+        (calibration) => calibration.id === newData.id,
       );
       if (calibrationData) {
         response = await peristalticMotorApi.updatePeristalticCalibration({
           ...calibrationData,
+          name: newData.name,
           slope: newData.flow_rate,
         });
       }

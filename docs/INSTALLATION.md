@@ -119,7 +119,8 @@ automatically open the application in your web browser.
 > Double-clicking the shortcut will start the Docker services and open the application at
 > <http://localhost:5173> in your default web browser.
 
-**NOTE!** Opened terminals have to stay open for the services to keep running.
+> [!NOTE] 
+> Opened terminals have to stay open for the services to keep running.
 
 ### Individual Docker Containers
 

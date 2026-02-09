@@ -46,13 +46,13 @@ def update_tube_configuration(tube_configuration: TubeConfiguration) -> bool:
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                    UPDATE tube_configurations SET name = %s, diameter = %s, flow_rate = %s WHERE name = %s
+                    UPDATE tube_configurations SET name = %s, diameter = %s, flow_rate = %s WHERE id = %s
                     """,
                     (
                         tube_configuration.name,
                         tube_configuration.diameter,
                         tube_configuration.flow_rate,
-                        tube_configuration.name,
+                        tube_configuration.id,
                     ),
                 )
                 conn.commit()
@@ -147,16 +147,12 @@ def update_peristaltic_calibration(calibration: PeristalticCalibration):
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                    UPDATE peristaltic_calibrations SET slope = %s, duration = %s, low_rpm = %s, high_rpm = %s, low_rpm_volume = %s, high_rpm_volume = %s WHERE name = %s
+                    UPDATE peristaltic_calibrations SET name= %s, slope = %s WHERE id = %s
                     """,
                     (
-                        calibration.slope,
-                        calibration.duration,
-                        calibration.low_rpm,
-                        calibration.high_rpm,
-                        calibration.low_rpm_volume,
-                        calibration.high_rpm_volume,
                         calibration.name,
+                        calibration.slope,
+                        calibration.id
                     ),
                 )
                 conn.commit()

@@ -81,6 +81,12 @@ const model = ref([
         url: "https://github.com/Institute-of-Biomedical-Sciences/dynamic-cell-culture-drive/blob/main/docs/user_guide/README.md",
         target: "_blank",
       },
+      {
+        label: "Services Update",
+        icon: "pi pi-fw pi-book",
+        url: "https://github.com/Institute-of-Biomedical-Sciences/dynamic-cell-culture-drive/blob/main/docs/services_update/README.md",
+        target: "_blank",
+      },
     ],
   },
 ]);

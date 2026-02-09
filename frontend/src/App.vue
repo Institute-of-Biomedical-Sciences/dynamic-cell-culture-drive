@@ -19,12 +19,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import { navigationConfirmPending, confirmMotorNavigation, cancelMotorNavigation } from '@/router'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
 
 const showNavigationDialog = ref(false)
+let statusInterval: number | null = null;
 
 watch(
   navigationConfirmPending,
@@ -43,6 +44,12 @@ const cancelNavigation = () => {
   showNavigationDialog.value = false
   cancelMotorNavigation()
 }
+
+onBeforeUnmount(() => {
+  if (statusInterval) {
+    clearInterval(statusInterval);
+  }
+})
 </script>
 
 <style>

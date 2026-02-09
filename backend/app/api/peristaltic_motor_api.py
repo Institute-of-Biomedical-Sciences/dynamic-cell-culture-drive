@@ -115,6 +115,7 @@ def update_peristaltic_calibration(
 ):
     """Update a peristaltic calibration."""
     try:
+        print(calibration)
         success = peristaltic_motor_handler.update_peristaltic_calibration(calibration)
         return {"success": success, "message": "Peristaltic calibration updated."}
     except Exception as e:

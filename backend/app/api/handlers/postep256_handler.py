@@ -52,6 +52,7 @@ class Postep256Handler:
                 print("Initializing shared PoStep256 USB device...")
 
                 serial_number = PoStep256USB.discover_devices()
+                print("devices", serial_number)
                 if len(serial_number) == 0:
                     raise Exception("No PoStep256 Motor USB device found.")
 

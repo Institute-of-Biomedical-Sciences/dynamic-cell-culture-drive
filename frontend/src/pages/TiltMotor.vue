@@ -760,6 +760,7 @@ const handleFileSelect = (event: any) => {
 // ============================================================
 // Lifecycle hooks
 // ============================================================
+
 onMounted(() => {
   const lastRanScenarioId = localStorage.getItem('last_ran_scenario_id');
   if (lastRanScenarioId) {

@@ -183,7 +183,7 @@ const downloadCsv = (customFilename?: string) => {
   const rows = points
   .map((p) => {
     const yVal = selectedEntry.value?.type === 2 ? Math.abs(p.y) : p.y;
-    return `${p.x * 1000},${yVal}`;
+    return `${(p.x * 1000).toFixed(2)},${yVal.toFixed(2)}`;
   })
   .join('\n');
 
@@ -208,7 +208,6 @@ const fetchEntries = async () => {
     const tilt = await tiltMotorApi.getEntries();
     const rotary = await rotaryMotorApi.getEntries();
     const peristaltic = await peristalticMotorApi.getEntries();
-    console.log("peristaltic: ", peristaltic);
     // combine the two arrays with field tilt_scenario_id and rotary_scenario_id formatt as scenario_id
     // add a field type with value 0 in case of tilt and 1 in case of rotary
     entries.value = [...tilt, ...rotary, ...peristaltic].map((e: any) => ({
@@ -244,7 +243,6 @@ const fetchMeasurements = async (entry: any) => {
       measurements = await rotaryMotorApi.getMeasurements(entry.id, entry.scenario_id, maxDataPoints);
     } else if (entry.type === 2) {
       measurements = await peristalticMotorApi.getMeasurements(entry.id, entry.scenario_id, maxDataPoints);
-      console.log("measurements: ", measurements);
     }
 
     seriesData.value = measurements.map((m) => ({

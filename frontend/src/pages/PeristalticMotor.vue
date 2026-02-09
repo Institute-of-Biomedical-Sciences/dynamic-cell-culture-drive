@@ -64,8 +64,6 @@
 				<div class="col">
 					<FloatLabel variant="on">
 					<InputNumber class="w-full"
-						:minFractionDigits="0"
-						:maxFractionDigits="2"
 						v-model="runConfiguration.movements[i-1].duration" />
 					<label>Duration (s)</label>
 					</FloatLabel>

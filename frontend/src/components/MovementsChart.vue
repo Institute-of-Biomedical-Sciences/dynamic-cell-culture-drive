@@ -195,7 +195,7 @@ const downloadCsv = (customFilename?: string) => {
   const rows = points
   .map((p) => {
     const yVal = props.type === 2 ? Math.abs(p.y) : p.y;
-    return `${(p.x * 1000).toFixed(0)},${yVal}`;
+    return `${(p.x * 1000).toFixed(2)},${yVal.toFixed(2)}`;
   })
     .join('\n');
 
@@ -243,7 +243,6 @@ const setupWebSocket = () => {
     }
     if (msg.type === "peristaltic") {
       const m = msg.data;
-      console.log("m: ", m);
       addPoints(m.map((m: { time: number; flow: number; direction: string }) => ({ x: Number(m.time), y: m.flow * (m.direction === 'cw' ? 1 : -1) })));
     }
   } catch (e) {

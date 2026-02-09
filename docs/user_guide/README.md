@@ -66,6 +66,16 @@ characteristics, such as:
 - `End position` (end position of motor after finishing the movements - left/horizontal/right).
 - `Microstepping` ( 1/4 step - 1/256 step).
 
+> [!WARNING]
+> **Tilt Motor Safety Notice**
+>
+> The tilt motor controls a movable platform that may collide with the table or surrounding objects if operated incorrectly. Improper use can result in **serious damage to the motors, equipment, surrounding property, or personal injury**.
+>
+> **Before initiating any movement**, the platform **must be returned to the 0° (home) position** using the **homing button**. Failure to do so may cause the platform to move beyond safe limits.
+>
+> Always verify platform position and clearance before operation. Do not operate the system unattended.
+
+
 After completing the form fields we can:
 
 1. `Export` the scenario in JSON format, described in section
@@ -73,8 +83,10 @@ After completing the form fields we can:
 2. `Save scenario` to the database.
 3. `Tilt motor`to trigger the motor movements.
 
-**NOTE!** Running the scenario by clicking on `Tilt motor` without `Saving scenario` beforehand will
-run the scenario without saving it to the database. The scenario will be lost on page change.
+> [!NOTE] 
+> Running the scenario by clicking on `Tilt motor` without `Saving scenario` beforehand will
+> run the scenario without saving it to the database. The scenario will be lost on page change.
+
 
 In the **Real-time Tilt Movements** Section we can view the real-time tilt movements of the motor:
 
@@ -182,8 +194,9 @@ After completing the form fields we can:
 2. `Save scenario` to the database.
 3. `Rotate motor`to trigger the motor movements.
 
-**NOTE!** Running the scenario by clicking on `Rotate motor` without `Saving scenario` beforehand
-will run the scenario without saving it to the database. The scenario will be lost on page change.
+> [!NOTE]
+> Running the scenario by clicking on `Rotate motor` without `Saving scenario` beforehand
+> will run the scenario without saving it to the database. The scenario will be lost on page change.
 
 In the **Real-time Rotary Movements** Section we can view the real-time rotary movements of the
 motor:
@@ -294,8 +307,9 @@ After completing the form fields we can:
 2. `Save scenario` to the database.
 3. `Rotate motor`to trigger the motor movements.
 
-**NOTE!** Running the scenario by clicking on `Rotate motor` without `Saving scenario` beforehand
-will run the scenario without saving it to the database. The scenario will be lost on page change.
+> [!NOTE] 
+> Running the scenario by clicking on `Rotate motor` without `Saving scenario` beforehand
+> will run the scenario without saving it to the database. The scenario will be lost on page change.
 
 In the **Real-time Peristaltic Movements** Section we can view the real-time rotary movements of the
 peristaltic motor:
@@ -467,7 +481,8 @@ For configuration **type** of `tube configuration`:
 - field `Diameter` for the diameter of the tube.
 - field `Flow Rate` for flow rate of the tube.
 
-**NOTE!** Flow rate for tube configurations are calculated by **formula**:
+> [!NOTE]
+> Flow rate for tube configurations are calculated by **formula**:
 
 ```math
 \frac{51}{4} \cdot \frac{\pi^2 \cdot \text{diameter}^2}{1000}
