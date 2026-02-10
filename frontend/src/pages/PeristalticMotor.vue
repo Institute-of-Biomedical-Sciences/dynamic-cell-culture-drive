@@ -47,40 +47,38 @@
 				  </div>
 				</template>
 				<div v-if="runConfiguration.movements.length > 0" class="grid">
-				  <div class="col-3">
-					  <FloatLabel variant="on" >
-						<InputNumber class="w-full"
-							:style="{ minWidth: '0' }"
-							:min="0"
-							:max="10"
-							:step="0.1"
-							:minFractionDigits="0"
-							:maxFractionDigits="2"
-							v-model="runConfiguration.movements[i-1].flow" />
-					  <label>Flow (mL/min)</label>
-					  </FloatLabel>
-				  </div>
+				<div class="col">
+					<FloatLabel variant="on">
+					<InputNumber class="w-full"
+						:style="{ minWidth: '0' }"
+						:min="0"
+						:max="100"
+						:step="0.1"
+						:minFractionDigits="0"
+						:maxFractionDigits="2"
+						v-model="runConfiguration.movements[i-1].flow" />
+					<label>Flow (mL/min)</label>
+					</FloatLabel>
+				</div>
 
-				  <div class="col-3">
-					  <FloatLabel variant="on" >
-					  <InputNumber
-					  	  :minFractionDigits="0"
-						  :maxFractionDigits="2"
-						  v-model="runConfiguration.movements[i-1].duration" />
-					  <label>Duration (s)</label>
-					  </FloatLabel>
-				  </div>
+				<div class="col">
+					<FloatLabel variant="on">
+					<InputNumber class="w-full"
+						v-model="runConfiguration.movements[i-1].duration" />
+					<label>Duration (s)</label>
+					</FloatLabel>
+				</div>
 
-				  <div class="col-6">
-					  <FloatLabel class="w-full" variant="on" >
-					  <Select class="w-full"
-						  v-model="runConfiguration.movements[i-1].direction"
-						  :options="directionOptions"
-						  optionLabel="label"
-						  optionValue="value" />
-					  <label>Direction</label>
-					  </FloatLabel>
-				  </div>
+				<div class="col">
+					<FloatLabel class="w-full" variant="on">
+					<Select class="w-full"
+						v-model="runConfiguration.movements[i-1].direction"
+						:options="directionOptions"
+						optionLabel="label"
+						optionValue="value" />
+					<label>Direction</label>
+					</FloatLabel>
+				</div>
 				</div>
 			  </Fieldset>
 			</div>
@@ -92,15 +90,15 @@
 	  </template>
 	  <template #footer>
 		<div class="run-config-footer">
-		  <div class="flex justify-end">
+		  <div class="justify-end">
 			<Button v-if="runConfiguration && !isRotating && !rotatePaused" class="ml-2 btn" severity="secondary" @click="handleExportScenario">Export</Button>
-			<Button v-if="!isRotating && !rotatePaused && scenarios.find(el => el.id === runConfiguration.scenario_id && el.name === runConfiguration.name)" severity="secondary" class="ml-2 btn" @click="handleUpdateScenario">Update Peristaltic Scenario</Button>
-			<Button v-if="!isRotating && !rotatePaused && !scenarios.find(el => el.id === runConfiguration.scenario_id && el.name === runConfiguration.name)" severity="info" class="ml-2 btn" @click="handleSaveScenario">Save Peristaltic Scenario</Button>
-			<Button v-if="!isRotating && !rotatePaused" class="ml-2 btn" @click="rotateMotor">Rotate Motor</Button>
+			<Button v-if="!isRotating && !rotatePaused && scenarios.find(el => el.id === runConfiguration.scenario_id && el.name === runConfiguration.name)" severity="secondary" class="m-2" @click="handleUpdateScenario">Update Scenario</Button>
+			<Button v-if="!isRotating && !rotatePaused && !scenarios.find(el => el.id === runConfiguration.scenario_id && el.name === runConfiguration.name)" severity="info" class="m-2" @click="handleSaveScenario">Save Scenario</Button>
+			<Button v-if="!isRotating && !rotatePaused" class="m-2" @click="rotateMotor">Rotate</Button>
 			<div v-if="isRotating">
-			  <Button v-if="!rotatePaused" class="btn mr-2" severity="info" @click="pauseRotating">Pause Rotating</Button>
-			  <Button v-if="rotatePaused" class="btn mr-2" severity="secondary" @click="resumeRotating">Resume Rotating</Button>
-			  <Button class="btn" severity="danger" @click="stopRotating">Stop Motor</Button>
+			  <Button v-if="!rotatePaused" class="m-2" severity="info" @click="pauseRotating">Pause</Button>
+			  <Button v-if="rotatePaused" class="m-2" severity="secondary" @click="resumeRotating">Resume</Button>
+			  <Button class="m-2" severity="danger" @click="stopRotating">Stop</Button>
 			</div>
 		  </div>
 		</div>
@@ -167,7 +165,7 @@
 
 			  <Column field="name" header="Name" />
 
-			  <Column header="Speed (Flow)">
+			  <Column header="Flow (mL/min)">
 				  <template #body="slotProps">
 				  {{ slotProps.data.movements?.[0]?.flow ?? '-' }}
 				  </template>
@@ -213,7 +211,7 @@
 				  <div v-if="slotProps.data.movements && slotProps.data.movements.length > 1" class="p-3 ml-6">
 				  <h4 class="mb-2">Movements</h4>
 				  <DataTable :value="slotProps.data.movements" size="small">
-					  <Column field="flow" header="Speed (Flow)" />
+					  <Column field="flow" header="Flow (mL/min)" />
 					  <Column field="duration" header="Duration (s)" />
 					  <Column field="direction" header="Direction" >
 						<template #body="slotProps">
@@ -391,13 +389,9 @@
 	};
 
   const movementsMaxFlow = computed(() => {
-    return runConfiguration.value.movements.reduce((max, movement) => {
-		const tube_configuration = tubeConfigurations.value.find(tube_configuration => tube_configuration.name === runConfiguration.value.calibration.name);
-		if (tube_configuration) {
-			return Math.max(max, movement.flow / tube_configuration.flow_rate);
-		}
-      return Math.max(max, movement.flow ?? 3);
-    }, 0);
+	return runConfiguration.value.movements.reduce((max, movement) => {
+		return Math.max(max, movement.flow ?? 20);
+	}, 0);
   });
 
 	const rotateMotor = async () => {
@@ -407,14 +401,14 @@
 	  timeElapsed.value = performance.now();
 		const response = await peristalticMotorApi.rotateMotor({entry_name: entry_name, scenario_id: runConfiguration.value.scenario_id, scenario_name: runConfiguration.value.name, calibration_name: runConfiguration.value.calibration.name, calibration_preset: runConfiguration.value.calibration.preset, movements: runConfiguration.value.movements});
 		isRotating.value = response.success
+		showSuccess("Motor started rotating successfully.")
+
 	  } catch (err: any) {
 		if (err.status === 422){
 			showError("Error with starting rotating. Scenario name or calibration missing.")
 		} else {
 			showError("Error with starting rotating.")
 		}
-	  } finally {
-	  showSuccess("Motor started rotating successfully.")
 	  }
 	};
 
@@ -423,10 +417,9 @@
 		const response = await peristalticMotorApi.resumeRotate(currentMovement.value);
 		isRotating.value = true;
 		rotatePaused.value = false;
+		showSuccess("Motor resumed rotating successfully.")
 	  } catch (err: any) {
 		showError("Error with resuming rotating.")
-	  } finally {
-	  showSuccess("Motor resumed rotating successfully.")
 	  }
 	};
 
@@ -435,10 +428,9 @@
 		const response = await peristalticMotorApi.pauseRotate();
 		isRotating.value = false;
 		rotatePaused.value = true;
+		showSuccess("Motor paused successfully.")
 	  } catch (err: any) {
 		showError("Error with pausing rotating.")
-	  } finally {
-	  showSuccess("Motor paused successfully.")
 	  }
 	};
 
@@ -448,10 +440,9 @@
 		timeElapsed.value = performance.now() - timeElapsed.value;
 		isRotating.value = false;
 		rotatePaused.value = false;
+		showSuccess("Motor stopped successfully.")
 	  } catch (err: any) {
 		showError("Error with stopping rotating.")
-	  } finally {
-	  showSuccess("Motor stopped successfully.")
 	  }
 	};
 	const fetchScenarios = async () => {
@@ -509,12 +500,19 @@
 			calibration: runConfiguration.value.calibration,
 			...runConfiguration.value});
 		if (response.success) {
+		showSuccess("Scenario saved successfully.")
 		  fetchScenarios();
 		}
 	  } catch (err: any) {
-		showError("Error with saving scenario.")
-	  } finally {
-		showSuccess("Scenario saved successfully.")
+		if (err.response.status === 500) {
+		  showError("Error with saving scenario. Scenario name is required.");
+		}
+		else if (err.response.status === 422) {
+		  showError("Error with saving scenario. Fields missing.");
+		}
+		else {
+		  showError("Error with saving scenario.");
+		}
 	  }
 	};
 
@@ -548,10 +546,10 @@ const handleExportScenario = () => {
     a.download = `${scenario.name}.json`;
     a.click();
     URL.revokeObjectURL(url);
+    showSuccess("Scenario exported successfully.");
+
   } catch (err: any) {
     showError("Error with exporting scenario.");
-  } finally {
-    showSuccess("Scenario exported successfully.");
   }
 };
 
@@ -690,7 +688,7 @@ onMounted(() => {
 	fetchScenarios();
 	statusInterval = window.setInterval(() => {
 	fetchStatus();
-	}, 1000);
+	}, 2000);
 });
 
 onBeforeUnmount(() => {

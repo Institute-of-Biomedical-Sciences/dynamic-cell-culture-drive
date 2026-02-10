@@ -40,7 +40,7 @@ from .websocket_manager import WebSocket, manager
 
 def lifespan(app: FastAPI):
     """Application lifespan manager."""
-    print("Starting New Harvest Control Software...")
+    print("Starting Dynamic Cell Culture Drive Control Software...")
 
     # DB first (usually quick and should fail fast)
     try:
@@ -72,7 +72,7 @@ def lifespan(app: FastAPI):
     yield
 
     # Shutdown (can also be parallelized similarly if needed)
-    print("Shutting down New Harvest Control Software...")
+    print("Shutting down Dynamic Cell Culture Drive Control Software...")
     try:
         tilt_motor_handler.cleanup()
     except Exception as e:
@@ -97,7 +97,7 @@ def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.app_name,
     version=settings.version,
-    description="Hardware control server for New Harvest system",
+    description="Hardware control server for Dynamic Cell Culture Drive system",
     lifespan=lifespan,
 )
 
@@ -122,7 +122,7 @@ app.include_router(api_router)
 def root():
     """Root endpoint."""
     return {
-        "message": "New Harvest Control Software",
+        "message": "Dynamic Cell Culture Drive Control Software",
         "version": settings.version,
         "docs": "/docs",
         "redoc": "/redoc",

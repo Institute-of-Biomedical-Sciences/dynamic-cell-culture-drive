@@ -30,35 +30,36 @@
                 </div>
               </template>
               <div v-if="runConfiguration.movements.length > 0" class="grid">
-				<div class="col">
-					<FloatLabel variant="on" >
-					<InputNumber class="w-full"
-						:min="0"
-						:max="10"
-						:step="0.1"
-						v-model="runConfiguration.movements[i-1].rpm" />
-					<label>Speed (RPM)</label>
-					</FloatLabel>
-				</div>
+                <div class="col">
+                  <FloatLabel variant="on" >
+                  <InputNumber class="w-full"
+                    :style="{ minWidth: '0' }"
+                    :min="0"
+                    :max="10"
+                    :step="0.1"
+                    v-model="runConfiguration.movements[i-1].rpm" />
+                  <label>Speed (RPM)</label>
+                  </FloatLabel>
+                </div>
 
-				<div class="col">
-					<FloatLabel variant="on" >
-					<InputNumber class="w-full"
-						v-model="runConfiguration.movements[i-1].duration" />
-					<label>Duration (s)</label>
-					</FloatLabel>
-				</div>
+                <div class="col">
+                  <FloatLabel variant="on" >
+                  <InputNumber class="w-full"
+                    v-model="runConfiguration.movements[i-1].duration" />
+                  <label>Duration (s)</label>
+                  </FloatLabel>
+                </div>
 
-				<div class="col">
-					<FloatLabel variant="on" >
-					<Select class="w-full"
-						v-model="runConfiguration.movements[i-1].direction"
-						:options="directionOptions"
-						optionLabel="label"
-						optionValue="value" />
-					<label>Direction</label>
-					</FloatLabel>
-				</div>
+                <div class="col">
+                  <FloatLabel class="w-full" variant="on" >
+                  <Select class="w-full"
+                    v-model="runConfiguration.movements[i-1].direction"
+                    :options="directionOptions"
+                    optionLabel="label"
+                    optionValue="value" />
+                  <label>Direction</label>
+                  </FloatLabel>
+                </div>
               </div>
             </Fieldset>
           </div>
@@ -70,15 +71,15 @@
     </template>
     <template #footer>
       <div class="run-config-footer">
-        <div class="flex justify-end">
-          <Button v-if="runConfiguration && !isRotating && !rotatePaused" severity="secondary" class="ml-2 btn" @click="handleExportScenario">Export</Button>
-          <Button v-if="!isRotating && !rotatePaused && scenarios.find(el => el.id === runConfiguration.scenario_id && el.name === runConfiguration.name)" severity="secondary" class="ml-2 btn" @click="handleUpdateScenario">Update Rotation Scenario</Button>
-          <Button v-if="!isRotating && !rotatePaused && !scenarios.find(el => el.id === runConfiguration.scenario_id && el.name === runConfiguration.name)" severity="info" class="ml-2 btn" @click="handleSaveScenario">Save Rotation Scenario</Button>
-          <Button v-if="!isRotating && !rotatePaused" class="ml-2 btn" @click="rotateMotor">Rotate Motor</Button>
-          <div v-if="isRotating">
-            <Button v-if="!rotatePaused" class="btn mr-2" severity="info" @click="pauseRotating">Pause Rotating</Button>
-            <Button v-if="rotatePaused" class="btn mr-2" severity="secondary" @click="resumeRotating">Resume Rotating</Button>
-            <Button class="btn" severity="danger" @click="stopRotating">Stop Motor</Button>
+        <div class="justify-end">
+          <Button v-if="runConfiguration && !isRotating && !rotatePaused" severity="secondary" class="ml-2" @click="handleExportScenario">Export</Button>
+          <Button v-if="!isRotating && !rotatePaused && scenarios.find(el => el.id === runConfiguration.scenario_id && el.name === runConfiguration.name)" severity="secondary" class="ml-2" @click="handleUpdateScenario">Update Scenario</Button>
+          <Button v-if="!isRotating && !rotatePaused && !scenarios.find(el => el.id === runConfiguration.scenario_id && el.name === runConfiguration.name)" severity="info" class="ml-2" @click="handleSaveScenario">Save Scenario</Button>
+          <Button v-if="!isRotating && !rotatePaused" class="m-2" @click="rotateMotor">Rotate</Button>
+          <div class="mt-1" v-if="isRotating">
+            <Button v-if="!rotatePaused" class="m-2" severity="info" @click="pauseRotating">Pause</Button>
+            <Button v-if="rotatePaused" class="m-2" severity="secondary" @click="resumeRotating">Resume</Button>
+            <Button class="m-2" severity="danger" @click="stopRotating">Stop</Button>
           </div>
         </div>
       </div>
@@ -450,10 +451,9 @@
 	timeElapsed.value = performance.now();
 	  const response = await rotaryMotorApi.rotateMotor(entry_name, {...runConfiguration.value});
 	  isRotating.value = response.success
+    showSuccess("Motor started rotating successfully.")
 	} catch (err: any) {
       showError("Error with starting rotating.")
-	} finally {
-    showSuccess("Motor started rotating successfully.")
 	}
   };
 
@@ -461,10 +461,9 @@
 	try {
 	  const response = await rotaryMotorApi.resumeRotate(currentMovement.value);
 	  rotatePaused.value = false;
+    showSuccess("Motor resumed rotating successfully.")
 	} catch (err: any) {
       showError("Error with resuming rotating.")
-	} finally {
-    showSuccess("Motor resumed rotating successfully.")
 	}
   };
 
@@ -472,10 +471,9 @@
 	try {
 	  const response = await rotaryMotorApi.pauseRotate();
 	  rotatePaused.value = true;
+    showSuccess("Motor paused successfully.")
 	} catch (err: any) {
       showError("Error with pausing rotating.")
-	} finally {
-    showSuccess("Motor paused successfully.")
 	}
   };
 
@@ -484,10 +482,9 @@
 	  await rotaryMotorApi.stopRotate();
 	  timeElapsed.value = performance.now() - timeElapsed.value;
 	  rotatePaused.value = false;
+    showSuccess("Motor stopped successfully.")
 	} catch (err: any) {
       showError("Error with stopping rotating.")
-	} finally {
-    showSuccess("Motor stopped successfully.")
 	}
   };
   const fetchScenarios = async () => {
@@ -514,22 +511,22 @@
 	  const response = await rotaryMotorApi.removeRotationScenario(scenarioId);
 	  if (response.success) {
 		fetchScenarios();
+        showSuccess("Scenario deleted successfully.")
 	  }
 	} catch (err: any) {
       showError("Error with deleting scenario.")
-	} finally {
-      showSuccess("Scenario deleted successfully.")
 	}
   };
 
   const handleUpdateScenario = async () => {
     try {
       const response = await rotaryMotorApi.updateRotationScenario(runConfiguration.value.scenario_id, { ...runConfiguration.value});
+      if (response.success) {
+        fetchScenarios();
+        showSuccess("Scenario updated successfully.")
+      }
     } catch (err: any) {
       showError("Error with updating scenario.")
-    } finally {
-      showSuccess("Scenario updated successfully.")
-      fetchScenarios();
     }
   };
   const handleSaveScenario = async () => {
@@ -543,11 +540,18 @@
     if (response.success) {
       await fetchScenarios()
       // optionally: find the new scenario by response.rotation_scenario_id and call loadScenario on it
+      showSuccess("Scenario saved successfully.")
     }
   } catch (err: any) {
-    showError("Error with saving scenario.")
-  } finally {
-    showSuccess("Scenario saved successfully.")
+    if (err.response.status === 500) {
+      showError("Error with saving scenario. Scenario name is required.");
+    }
+    else if (err.response.status === 422) {
+      showError("Error with saving scenario. Fields missing.");
+    }
+    else {
+      showError("Error with saving scenario.");
+    }
   }
 }
 
@@ -591,7 +595,7 @@
 	fetchScenarios();
 	statusInterval = window.setInterval(() => {
 	  fetchStatus();
-	}, 1000);
+	}, 2000);
   });
 
   onBeforeUnmount(() => {
@@ -678,40 +682,7 @@
 	color: var(--text-primary);
   }
 
-  .control-grid {
-	display: grid;
-	gap: 1.5rem;
-	min-height: 0;
-	flex: 1;
-  }
 
-
-  .scenarios-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-  }
-
-
-  .quick-actions {
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
-  }
-
-  .quick-actions .btn {
-	width: 100%;
-  }
-
-  .card-body form {
-	display: flex;
-	flex-direction: column;
-	gap: 1rem;
-  }
-
-  .card-body form .btn {
-	width: 100%;
-  }
 
   .alert {
 	position: relative;
@@ -759,4 +730,14 @@
   .modal-close:hover {
 	color: var(--text-primary);
   }
+
+  :deep(.p-inputnumber) {
+  min-width: 0 !important;
+  width: 100%;
+}
+
+:deep(.p-inputnumber .p-inputnumber-input) {
+  min-width: 0 !important;
+  width: 100%;
+}
   </style>

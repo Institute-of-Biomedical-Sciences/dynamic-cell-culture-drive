@@ -1,5 +1,5 @@
 @echo off
-set PROJECT_DIR=C:\path\to\newharvest-control-software
+set PROJECT_DIR=C:\path\to\dynamic-cell-culture-drive
 set BACKEND_DIR=%PROJECT_DIR%\backend
 set FRONTEND_DIR=%PROJECT_DIR%\frontend
 

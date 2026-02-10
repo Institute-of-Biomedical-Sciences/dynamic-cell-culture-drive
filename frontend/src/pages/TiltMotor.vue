@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full">
+  <div>
     <div class="page-header">
       <h1 class="page-title">
         <span class="text-muted-color">Tilt Motor Control</span>
@@ -8,16 +8,16 @@
 
     <div class="grid grid-cols-3 control-grid">
       <!-- Run Configuration Card -->
-      <Card class="col-span-1 overflow-hidden">
+      <Card style="align-self: start;" class=" col-span-1 overflow-hidden">
         <template #title>Run Configuration</template>
         <template #content>
-          <div class="form-group flex flex-col gap-1 mt-5">
-            <FloatLabel class="w-full mb-3" variant="on">
+          <div class="form-group flex flex-col gap-1">
+            <FloatLabel class="w-full mb-1" variant="on">
               <InputText class="w-full" v-model="runConfiguration.name" />
               <label for="on_label">Name</label>
             </FloatLabel>
 
-            <FloatLabel class="w-full mb-3" variant="on">
+            <FloatLabel class="w-full mb-1" variant="on">
               <InputNumber
                 class="w-full"
                 :min="-20.0"
@@ -28,7 +28,7 @@
               <label for="on_label">Minimum tilt (deg)</label>
             </FloatLabel>
 
-            <FloatLabel class="w-full mb-3" variant="on">
+            <FloatLabel class="w-full mb-1" variant="on">
               <InputNumber
                 class="w-full"
                 :min="-20.0"
@@ -39,7 +39,7 @@
               <label for="on_label">Maximum tilt (deg)</label>
             </FloatLabel>
 
-            <FloatLabel class="w-full mb-3" variant="on">
+            <FloatLabel class="w-full mb-1" variant="on">
               <InputNumber
                 class="w-full"
                 :maxFractionDigits="2"
@@ -50,7 +50,7 @@
               <label for="on_label">Move duration (s)</label>
             </FloatLabel>
 
-            <FloatLabel class="w-full mb-3" variant="on">
+            <FloatLabel class="w-full mb-1" variant="on">
               <InputNumber
                 class="w-full"
                 :maxFractionDigits="2"
@@ -61,7 +61,7 @@
               <label for="on_label">Repetitions (s)</label>
             </FloatLabel>
 
-            <FloatLabel class="w-full mb-3" variant="on">
+            <FloatLabel class="w-full mb-1" variant="on">
               <InputNumber
                 class="w-full"
                 :maxFractionDigits="2"
@@ -72,7 +72,7 @@
               <label for="on_label">Standstill duration left (s)</label>
             </FloatLabel>
 
-            <FloatLabel class="w-full mb-3" variant="on">
+            <FloatLabel class="w-full mb-1" variant="on">
               <InputNumber
                 class="w-full"
                 :maxFractionDigits="2"
@@ -83,7 +83,7 @@
               <label for="on_label">Standstill duration horizontal (s)</label>
             </FloatLabel>
 
-            <FloatLabel class="w-full mb-3" variant="on">
+            <FloatLabel class="w-full mb-1" variant="on">
               <InputNumber
                 class="w-full"
                 :maxFractionDigits="2"
@@ -94,7 +94,7 @@
               <label for="on_label">Standstill duration right (s)</label>
             </FloatLabel>
 
-            <FloatLabel class="w-full mb-3" variant="on">
+            <FloatLabel class="w-full mb-1" variant="on">
               <Select
                 class="w-full"
                 v-model="runConfiguration.end_position"
@@ -105,7 +105,7 @@
               <label for="on_label">End Position</label>
             </FloatLabel>
 
-            <FloatLabel class="w-full mb-3" variant="on">
+            <FloatLabel class="w-full mb-1" variant="on">
               <Select
                 class="w-full"
                 v-model="runConfiguration.microstepping"
@@ -115,9 +115,13 @@
               />
               <label for="on_label">Microstepping</label>
             </FloatLabel>
-
+          </div>
+        </template>
+        <template #footer>
+          <!-- make this div be 100% width of parent-->
+          <div class="footer-separator"></div>
             <div class="flex justify-end ml-1">
-              <div class="flex justify-end">
+              <div class="justify-end">
                 <Button
                   v-if="runConfiguration && !isTilting && !tiltPaused"
                   class="m-2 btn"
@@ -142,7 +146,8 @@
                   severity="secondary"
                   @click="handleUpdateScenario"
                 >
-                  Update Tilt Scenario
+                <span>Update Scenario</span>
+
                 </Button>
 
                 <Button
@@ -151,7 +156,7 @@
                   severity="info"
                   @click="handleSaveScenario"
                 >
-                  Save Tilt Scenario
+                  Save Scenario
                 </Button>
 
                 <Button
@@ -159,7 +164,7 @@
                   class="m-2 btn"
                   @click="tiltMotor"
                 >
-                  Tilt Motor
+                  Tilt
                 </Button>
 
                 <Button
@@ -189,12 +194,11 @@
                 </div>
               </div>
             </div>
-          </div>
-        </template>
+          </template>
       </Card>
 
       <!-- Graph Card -->
-      <Card class="col-span-2">
+      <Card style="align-self: start;" class="col-span-2">
         <template #title>
           <span class="text-muted-color">Real-time Tilt Movements</span>
           <span class="ml-4 text-sm">Repetitions: {{ repetitionCounter }}</span>
@@ -204,10 +208,10 @@
             :key="runId"
             :isMoving="isTilting"
             :runId="runId"
-            :chartHeight="600"
+            :chartHeight="510"
             :scenario_name="runConfiguration.scenario_name"
-            :maxVal="Number(runConfiguration.max_tilt)"
-            :minVal="Number(runConfiguration.min_tilt)"
+            :maxVal="Number(runConfiguration.max_tilt) || 20"
+            :minVal="Number(runConfiguration.min_tilt) || -20"
             :type=0
           />
         </template>
@@ -576,11 +580,12 @@ const handleUpdateScenario = async () => {
     const response = await tiltMotorApi.updateMoveScenario({
       ...runConfiguration.value,
     });
+    if (response.success) {
+      fetchScenarios();
+      showSuccess("Scenario updated successfully.")
+    }
   } catch (err: any) {
     showError("Error with updating scenario.");
-  } finally {
-    showSuccess("Scenario updated successfully.");
-    fetchScenarios();
   }
 };
 
@@ -596,7 +601,15 @@ const handleSaveScenario = async () => {
       loadScenario(scenarios.value.find(scenario => scenario.id === response.tilt_scenario_id) as MoveScenario);
     }
   } catch (err: any) {
-    showError("Error with saving scenario.");
+    if (err.response.status === 500) {
+      showError("Error with saving scenario. Scenario name is required.");
+    }
+    else if (err.response.status === 422) {
+    showError("Error with saving scenario. Fields missing.");
+    }
+    else {
+      showError("Error with saving scenario.");
+    }
   }
 };
 
@@ -625,10 +638,10 @@ const handleExportScenario = () => {
     a.download = `${scenario.name}.json`;
     a.click();
     URL.revokeObjectURL(url);
+    showSuccess("Scenario exported successfully.");
+
   } catch (err: any) {
     showError("Error with exporting scenario.");
-  } finally {
-    showSuccess("Scenario exported successfully.");
   }
 };
 
@@ -738,10 +751,10 @@ const handleFileSelect = (event: any) => {
         microstepping: data.microstepping,
         imported: true,
       });
+      showSuccess("Scenario imported successfully.");
+
     } catch (error) {
       showError("Error with importing scenario.");
-    } finally {
-      showSuccess("Scenario imported successfully.");
     }
   };
 
@@ -755,6 +768,7 @@ const handleFileSelect = (event: any) => {
 // ============================================================
 // Lifecycle hooks
 // ============================================================
+
 onMounted(() => {
   const lastRanScenarioId = localStorage.getItem('last_ran_scenario_id');
   if (lastRanScenarioId) {
@@ -765,7 +779,7 @@ onMounted(() => {
   fetchScenarios();
   statusInterval = window.setInterval(() => {
     fetchStatus();
-  }, 1000);
+  }, 2000);
 });
 
 onBeforeUnmount(() => {
@@ -780,11 +794,6 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-  .h-full {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
 
   .page-header {
     flex-shrink: 0;
@@ -798,8 +807,9 @@ onBeforeUnmount(() => {
 
   .control-grid {
     display: grid;
-    gap: 1.2rem;
+    gap: 1rem;
   }
+
 
   .scenarios-header {
     display: flex;
@@ -872,5 +882,16 @@ onBeforeUnmount(() => {
 
   .modal-close:hover {
     color: var(--text-primary);
+  }
+
+.footer-separator {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    box-sizing: border-box;
+    width: calc(100% + 4rem); /* extend past the card's left/right padding */
+    margin: 0 -1rem 0 -2rem;  /* negative margins equal to card horizontal padding */
+    border-top: 1px solid var(--surface-border); /* only top border */
+    height: 0;
   }
 </style>

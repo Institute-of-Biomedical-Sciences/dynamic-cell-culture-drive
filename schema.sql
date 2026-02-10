@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS tilt_measurements (
 CREATE TABLE IF NOT EXISTS peristaltic_measurements (
 	id SERIAL,
 	entry_id INTEGER NOT NULL,
-	speed FLOAT NOT NULL,
+	flow FLOAT NOT NULL,
 	direction TEXT CHECK (direction IN ('cw', 'ccw')) NOT NULL,
 	time float NOT NULL,
 	PRIMARY KEY (id, time)
@@ -87,7 +87,8 @@ CREATE TABLE IF NOT EXISTS peristaltic_calibrations (
 	low_rpm_volume FLOAT NOT NULL,
 	high_rpm_volume FLOAT NOT NULL,
 	slope FLOAT NOT NULL,
-	name VARCHAR(255) NOT NULL
+	name VARCHAR(255) NOT NULL,
+	diameter FLOAT
 );
 
 CREATE TABLE IF NOT EXISTS tube_configurations (

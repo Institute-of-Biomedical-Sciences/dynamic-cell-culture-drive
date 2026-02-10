@@ -52,6 +52,7 @@ class Postep256Handler:
                 print("Initializing shared PoStep256 USB device...")
 
                 serial_number = PoStep256USB.discover_devices()
+                print("devices", serial_number)
                 if len(serial_number) == 0:
                     raise Exception("No PoStep256 Motor USB device found.")
 
@@ -70,14 +71,14 @@ class Postep256Handler:
                 if self._postep.enable_rt_stream():
                     print("PoStep256 motor real-time streaming enabled.")
 
-                self._postep.move_config(
-                    max_speed=max_speed,
-                    max_accel=max_accel,
-                    max_decel=max_decel,
-                    endsw=None,
-                )
-
                 self._postep.get_driver_settings()
+
+                # self._postep.move_config(
+                #     max_speed=max_speed,
+                #     max_accel=max_accel,
+                #     max_decel=max_decel,
+                #     endsw=None,
+                # )
 
                 # Read initial position
                 try:

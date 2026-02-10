@@ -46,9 +46,14 @@ def update_tube_configuration(tube_configuration: TubeConfiguration) -> bool:
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                    UPDATE tube_configurations SET flow_rate = %s WHERE name = %s
+                    UPDATE tube_configurations SET name = %s, diameter = %s, flow_rate = %s WHERE id = %s
                     """,
-                    (tube_configuration.flow_rate, tube_configuration.name),
+                    (
+                        tube_configuration.name,
+                        tube_configuration.diameter,
+                        tube_configuration.flow_rate,
+                        tube_configuration.id,
+                    ),
                 )
                 conn.commit()
                 return cur.rowcount > 0
@@ -108,6 +113,7 @@ def save_peristaltic_calibration(
     high_rpm_volume: float,
     slope: float,
     name: str,
+    diameter: float,
 ):
     """Save calibration data."""
     try:
@@ -115,8 +121,8 @@ def save_peristaltic_calibration(
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                    INSERT INTO peristaltic_calibrations (duration, low_rpm, high_rpm, low_rpm_volume, high_rpm_volume, slope, name)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO peristaltic_calibrations (duration, low_rpm, high_rpm, low_rpm_volume, high_rpm_volume, slope, name, diameter)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                 """,
                     (
                         duration,
@@ -126,6 +132,7 @@ def save_peristaltic_calibration(
                         high_rpm_volume,
                         slope,
                         name,
+                        diameter,
                     ),
                 )
                 conn.commit()
@@ -142,16 +149,13 @@ def update_peristaltic_calibration(calibration: PeristalticCalibration):
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                    UPDATE peristaltic_calibrations SET slope = %s, duration = %s, low_rpm = %s, high_rpm = %s, low_rpm_volume = %s, high_rpm_volume = %s WHERE name = %s
+                    UPDATE peristaltic_calibrations SET name= %s, slope = %s, diameter = %s WHERE id = %s
                     """,
                     (
-                        calibration.slope,
-                        calibration.duration,
-                        calibration.low_rpm,
-                        calibration.high_rpm,
-                        calibration.low_rpm_volume,
-                        calibration.high_rpm_volume,
                         calibration.name,
+                        calibration.slope,
+                        calibration.diameter,
+                        calibration.id,
                     ),
                 )
                 conn.commit()
@@ -166,7 +170,7 @@ def get_peristaltic_calibration(name: str) -> PeristalticCalibration:
     with db.get_cursor() as cur:
         cur.execute(
             """
-            SELECT id, duration, low_rpm, high_rpm, low_rpm_volume, high_rpm_volume, slope, name
+            SELECT id, duration, low_rpm, high_rpm, low_rpm_volume, high_rpm_volume, slope, name, diameter
             FROM peristaltic_calibrations WHERE name = %s
         """,
             (name,),
@@ -179,7 +183,7 @@ def get_peristaltic_calibrations() -> List[PeristalticCalibration]:
     with db.get_cursor() as cur:
         cur.execute(
             """
-            SELECT id, duration, low_rpm, high_rpm, low_rpm_volume, high_rpm_volume, slope, name
+            SELECT id, duration, low_rpm, high_rpm, low_rpm_volume, high_rpm_volume, slope, name, diameter
             FROM peristaltic_calibrations
         """
         )
@@ -392,7 +396,7 @@ def create_peristaltic_measurements_batch(measurements: List[Dict[str, Any]]) ->
                 values = [
                     (
                         m["entry_id"],
-                        m["speed"],
+                        m["flow"],
                         m["direction"],
                         m["time"],
                     )
@@ -402,7 +406,7 @@ def create_peristaltic_measurements_batch(measurements: List[Dict[str, Any]]) ->
                 cur.executemany(
                     """
                     INSERT INTO peristaltic_measurements
-                    (entry_id, speed, direction, time)
+                    (entry_id, flow, direction, time)
                     VALUES (%s, %s, %s, %s)
                 """,
                     values,
@@ -423,9 +427,9 @@ def get_measurements(
     with db.get_cursor() as cur:
         # Use a subquery to get the most recent N measurements, then order them ASC for display
         query = """
-            SELECT id, entry_id, speed, direction, time
+            SELECT id, entry_id, flow, direction, time
             FROM (
-                SELECT id, entry_id, speed, direction, time
+                SELECT id, entry_id, flow, direction, time
                 FROM peristaltic_measurements
                 WHERE 1=1
         """

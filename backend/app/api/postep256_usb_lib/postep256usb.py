@@ -6,6 +6,7 @@ import platform
 import struct
 import time
 
+import usb
 import usb.backend.libusb1
 import usb.core
 import usb.util
@@ -327,9 +328,12 @@ class PoStep256USB(object):
 
         self.write_to_postep(data_list)
         received = self.read_from_postep(500)
-        print(list(received))
 
         received = list(received)
+
+        usb.util.dispose_resources(
+            self.device
+        )  # close connection to free usb - reading fails without this line
 
         return received
 
@@ -639,7 +643,7 @@ class PoStep256USB(object):
         settings["fullscale_current"] = round(fsc, 1)
 
         idle_current_reg = received[57:59]
-        print(f"Set idle current: {idle_current_reg}")
+        print(f"Read idle current: {idle_current_reg}")
 
         idle_current = self.reg_val_to_current(idle_current_reg[0], idle_current_reg[1])
         print(f"Calculated current: {idle_current}")

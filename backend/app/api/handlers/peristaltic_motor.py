@@ -36,6 +36,8 @@ from app.models import (
 from app.websocket_manager import manager
 from sklearn.linear_model import LinearRegression
 
+FLOW_RATIO_CONSTANT = 5.34
+
 
 class PeristalticMotorHandler:
     """Handler for the Peristaltic PoStep motor."""
@@ -71,6 +73,7 @@ class PeristalticMotorHandler:
         self._current_entry_id: int = None
         self._save_interval = 0.5  # Save queue to DB every 1 second
         self._save_measurements_task: threading.Thread = None
+        self._calibration_flow_ratio = None
 
     def initialize(self):
         """Initialize motor hardware with PoStep256 USB."""
@@ -88,7 +91,7 @@ class PeristalticMotorHandler:
             self._position_deg = postep256_handler.get_position()
 
             # Configure motor-specific settings
-            self._postep.set_driver_settings(microstep=2)
+            # self._postep.set_driver_settings(microstep=2)
 
             # Update position after settings
             try:
@@ -114,50 +117,65 @@ class PeristalticMotorHandler:
         self._rpm_calibration_stopped = True
         return True
 
-    def start_rpm_calibration(self, duration: int, rpm: int):
+    def start_rpm_calibration(self, duration: int, rpm: float, direction: str):
         """Start RPM calibration."""
         try:
+            self._postep.get_driver_settings()
+            self._postep.set_driver_settings(step_mode=2, microstep=4)
+            time.sleep(0.1)
             self._rpm_calibration_stopped = False
             self._postep.run_sleep(True)
-            self._raise_speed_gradually(rpm * 100)
+            self._raise_speed_gradually(int(rpm * FLOW_RATIO_CONSTANT), direction)
             start_time = time.time()
             while time.time() - start_time < duration:
                 if self._rpm_calibration_stopped:
-                    self._lower_speed_gradually(rpm * 100)
+                    self._lower_speed_gradually(
+                        int(rpm * FLOW_RATIO_CONSTANT),
+                        direction,
+                        send_measurements=False,
+                    )
                     break
                 time.sleep(0.05)
 
-            self._lower_speed_gradually(rpm * 100)
+            self._lower_speed_gradually(
+                int(rpm * FLOW_RATIO_CONSTANT), direction, send_measurements=False
+            )
             self._postep.run_sleep(False)
             return True
         except Exception as e:
             print(f"Error starting RPM calibration: {e}")
             raise e
 
-    def _raise_speed_gradually(self, speed: int):
+    def _raise_speed_gradually(self, speed: int, direction: str):
         """Set the speed gradually."""
         for i in range(0, speed, 5):
             if self._rpm_calibration_stopped:
-                self._lower_speed_gradually(i)
+                self._lower_speed_gradually(
+                    i, direction, direction, send_measurements=False
+                )
                 break
-            self._postep.set_requested_speed(i)
+            self._postep.set_requested_speed(i, direction)
             time.sleep(0.02)
-        self._postep.set_requested_speed(speed)
+        self._postep.set_requested_speed(speed, direction)
 
-    def _lower_speed_gradually(self, speed: int):
+    def _lower_speed_gradually(
+        self, speed: int, direction: str, send_measurements: bool = True
+    ):
         """Lower the speed gradually."""
         for i in range(speed, 0, -5):
-            self._add_to_measurement_queue(
-                entry_id=self._current_entry_id,
-                speed=i / 100,
-                direction=self._current_direction,
-                time=time.time() - self._rotate_motor_start_time,
-            )
-            self._postep.set_requested_speed(i)
+            if send_measurements:
+                rpm_current = i / FLOW_RATIO_CONSTANT
+                flow_current = rpm_current * self._calibration_flow_ratio  # mL/min
+                self._add_to_measurement_queue(
+                    entry_id=self._current_entry_id,
+                    flow=flow_current,
+                    direction=self._current_direction,
+                    time=time.time() - self._rotate_motor_start_time,
+                )
+            self._postep.set_requested_speed(i, direction)
             self._current_speed = i
             time.sleep(0.02)
-        self._postep.set_requested_speed(0)
-        self._postep.set_run(False)
+        self._postep.set_requested_speed(0, direction)
         self._current_speed = 0
 
     def _compute_slope(
@@ -169,9 +187,6 @@ class PeristalticMotorHandler:
         high_rpm_volume: float,
     ) -> float:
         """Compute slope (flow rate per RPM) using linear regression. Duration in seconds."""
-        print(
-            f"Computing slope for duration: {duration}, low_rpm: {low_rpm}, high_rpm: {high_rpm}, low_rpm_volume: {low_rpm_volume}, high_rpm_volume: {high_rpm_volume}"
-        )
         duration_m = duration / 60.0
         X = np.array([0, low_rpm, high_rpm]).reshape((-1, 1))
         y = np.array([0, low_rpm_volume, high_rpm_volume]) / duration_m
@@ -186,6 +201,7 @@ class PeristalticMotorHandler:
         low_rpm_volume: float,
         high_rpm_volume: float,
         name: str,
+        diameter: float,
     ):
         """Save calibration data."""
         # New slope calculation using linear regression
@@ -209,16 +225,17 @@ class PeristalticMotorHandler:
             high_rpm_volume=high_rpm_volume,
             slope=slope,
             name=name,
+            diameter=diameter,
         )
         return slope
 
-    def get_rpm_from_configuration(self, configuration: TubeConfiguration) -> int:
-        """Get RPM from configuration."""
-        return int(configuration.flow_rate / self.slope)
+    def get_flow_from_rpm(self, rpm: int, slope: float) -> float:
+        """Get flow from RPM."""
+        return rpm * slope
 
     def get_rpm_from_flow(self, flow: float, slope: float) -> int:
         """Get RPM from flow."""
-        return int((flow / slope) * 100)
+        return flow / slope
 
     # ---------------------------------------------------------
     # Internal helpers: WebSocket + speed control + threading
@@ -244,13 +261,17 @@ class PeristalticMotorHandler:
         """Set the requested speed for the motor."""
         if speed < self._current_speed and prev_direction == direction:
             for i in range(int(self._movement_speed), int(speed), -5):
+                rpm_current = i / FLOW_RATIO_CONSTANT
+                flow_current = rpm_current * self._calibration_flow_ratio  # mL/min
                 self._add_to_measurement_queue(
                     entry_id=self._current_entry_id,
-                    speed=i / 100,
+                    flow=flow_current,
                     direction=direction,
                     time=time.time() - self._rotate_motor_start_time,
                 )
-                if self._stop_pressed:
+                if self._stop_pressed or self._pause_pressed:
+                    self._lower_speed_gradually(i, direction)
+                    self._postep.run_sleep(False)
                     break
                 self._postep.set_requested_speed(i, direction)
                 self._current_speed = i
@@ -261,26 +282,36 @@ class PeristalticMotorHandler:
             and prev_direction == direction
         ):
             for i in range(int(self._movement_speed), int(speed), 5):
+                rpm_current = i / FLOW_RATIO_CONSTANT
+                flow_current = rpm_current * self._calibration_flow_ratio  # mL/min
                 self._add_to_measurement_queue(
                     entry_id=self._current_entry_id,
-                    speed=i / 100,
+                    flow=flow_current,
                     direction=direction,
                     time=time.time() - self._rotate_motor_start_time,
                 )
-                if self._stop_pressed:
+                if self._stop_pressed or self._pause_pressed:
+                    self._lower_speed_gradually(i, direction)
+                    self._postep.run_sleep(False)
                     break
                 self._postep.set_requested_speed(i, direction)
                 self._current_speed = i
                 time.sleep(0.02)
         else:
+            if self._current_speed > 0:
+                self._lower_speed_gradually(self._current_speed, prev_direction)
             for i in range(0, int(speed), 5):
+                current_rpm = i / FLOW_RATIO_CONSTANT
+                current_flow = current_rpm * self._calibration_flow_ratio  # mL/min
                 self._add_to_measurement_queue(
                     entry_id=self._current_entry_id,
-                    speed=i / 100,
+                    flow=current_flow,
                     direction=direction,
                     time=time.time() - self._rotate_motor_start_time,
                 )
-                if self._stop_pressed:
+                if self._stop_pressed or self._pause_pressed:
+                    self._lower_speed_gradually(i, direction)
+                    self._postep.run_sleep(False)
                     break
                 self._postep.set_requested_speed(i, direction)
                 self._current_speed = i
@@ -297,15 +328,16 @@ class PeristalticMotorHandler:
                 self.send_peristaltic_movement_websocket(movement_index)
                 movement_index += 1
 
+                self._movement_speed = int(movement.flow * FLOW_RATIO_CONSTANT)
+                self._movement_start_time = time.time()
+                self._movement_remaining_time = 0
+
                 self._set_requested_speed(
-                    int(movement.flow * 100),
+                    self._movement_speed,
                     movement.direction,
                     self._current_direction,
                 )
                 self._current_direction = movement.direction
-                self._movement_speed = int(movement.flow * 100)
-                self._movement_start_time = time.time()
-                self._movement_remaining_time = 0
 
                 while (
                     time.time() - self._movement_start_time < movement.duration
@@ -314,19 +346,25 @@ class PeristalticMotorHandler:
                     if self._stop_pressed:
                         break
                     if self._pause_pressed or self._rotate_motor_paused:
-                        self._lower_speed_gradually(self._current_speed)
+                        self._lower_speed_gradually(
+                            self._current_speed, self._current_direction
+                        )
+                        print("JE OD TU?")
                         self._postep.run_sleep(False)
                         while self._rotate_motor_paused:
+                            if self._stop_pressed:
+                                break
                             time.sleep(0.2)
                             self._add_to_measurement_queue(
                                 entry_id=self._current_entry_id,
-                                speed=0,
+                                flow=0,
                                 direction=self._current_direction,
                                 time=time.time() - self._rotate_motor_start_time,
                             )
 
                         if self._resume_pressed:
                             self._postep.run_sleep(True)
+                            time.sleep(0.05)
                             self._set_requested_speed(
                                 self._movement_speed,
                                 self._current_direction,
@@ -338,6 +376,7 @@ class PeristalticMotorHandler:
                                 )
                             self._resume_pressed = False
                             self._pause_pressed = False
+                            print("se to sploh izvede")
                             self._rotate_motor_paused = False
                             self._movement_start_time = time.time()
                             continue
@@ -345,20 +384,31 @@ class PeristalticMotorHandler:
                     stream_data = self._postep.read_stream()
                     if stream_data and "pos" in stream_data:
                         self._position_deg = stream_data["pos"]
-                        if self._current_entry_id is not None:
+                        if (
+                            self._current_entry_id is not None
+                            and self._current_speed > 0
+                        ):
+                            rpm_current = self._movement_speed / FLOW_RATIO_CONSTANT
+                            flow_current = (
+                                rpm_current * self._calibration_flow_ratio
+                            )  # mL/min
                             self._add_to_measurement_queue(
                                 entry_id=self._current_entry_id,
-                                speed=movement.flow,
+                                flow=flow_current,
                                 direction=self._current_direction,
                                 time=time.time() - self._rotate_motor_start_time,
                             )
-            self._lower_speed_gradually(self._current_speed)
+
+            self._lower_speed_gradually(self._current_speed, self._current_direction)
             self._postep.move_to_stop()
             self._postep.run_sleep(False)
             time.sleep(0.05)
             self._send_peristaltic_stopped_websocket()
-
             self._rotate_motor_running = False
+            self._stop_pressed = False
+            self._pause_pressed = False
+            self._rotate_motor_paused = False
+            self._resume_pressed = False
             self._is_moving = False
             self._motor_status = MotorStatus.IDLE
             self._rotate_motor_start_time = 0
@@ -368,14 +418,14 @@ class PeristalticMotorHandler:
             raise e
 
     def _add_to_measurement_queue(
-        self, entry_id: int, speed: int, direction: str, time: datetime
+        self, entry_id: int, flow: float, direction: str, time: datetime
     ):
         """Add a measurement to the queue."""
         with self._queue_lock:
             self._measurement_queue.append(
                 {
                     "entry_id": entry_id,
-                    "speed": speed,
+                    "flow": flow,
                     "direction": direction,
                     "time": time,
                 }
@@ -463,16 +513,20 @@ class PeristalticMotorHandler:
         self._postep.run_sleep(True)
         self._rotate_motor_running = True
         self._postep.get_driver_settings()
-        self._postep.set_driver_settings(step_mode=2, microstep=2)
+        self._postep.set_driver_settings(step_mode=2, microstep=4)
         time.sleep(0.1)
         self._is_moving = True
         self._motor_status = MotorStatus.MOVING
         if calibration_preset:
             tube_configuration = self.get_tube_configuration(calibration_name)
+            self._calibration_flow_ratio = tube_configuration.flow_rate
             for movement in movements:
-                movement.flow = round(movement.flow / tube_configuration.flow_rate, 0)
+                movement.flow = self.get_rpm_from_flow(
+                    movement.flow, tube_configuration.flow_rate
+                )
         else:
             calibration = self.get_peristaltic_calibration(calibration_name)
+            self._calibration_flow_ratio = calibration.slope
             for movement in movements:
                 movement.flow = self.get_rpm_from_flow(movement.flow, calibration.slope)
         self._rotate_motor_task = threading.Thread(

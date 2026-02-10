@@ -4,7 +4,7 @@
       <h1 class="page-title"><span class="text-muted-color">Measurements History</span></h1>
     </div>
 
-    <div class="grid grid-cols-3 m-5 control-grid">
+    <div class="grid grid-cols-3 control-grid">
       <!-- Entry selection + chart -->
       <Card class="col-span-3">
         <template #content>
@@ -132,7 +132,7 @@ const chartOptions = computed(() => {
       width: 2,
     },
     title: {
-      text: type === 0 ? "Tilt Angle History" : type === 1 ? "Rotary Speed History" : type === 2 ? "Peristaltic Speed History" : "Movements History",
+      text: type === 0 ? "Tilt Angle History" : type === 1 ? "Rotary Speed History" : type === 2 ? "Peristaltic Flow History" : "Movements History",
       align: "left",
     },
     xaxis: {
@@ -143,7 +143,7 @@ const chartOptions = computed(() => {
     },
     yaxis: {
       title: {
-        text: type === 0 ? "Angle" : "Speed (RPM)",
+        text: type === 0 ? "Angle" : type === 1 ? "Speed (RPM)" : "Flow (mL/min)",
       },
       min: minVal,
       max: maxVal,
@@ -177,13 +177,15 @@ const chartOptions = computed(() => {
 
 const downloadCsv = (customFilename?: string) => {
   const points = seriesData.value;
+  const type = selectedEntry.value?.type ?? 0;
 
-  const header = 'Timestamp (ms),' + (selectedEntry.value?.type === 0 ? "Angle (deg)" : selectedEntry.value?.type === 1 ? "RPM" : "RPM") + '\n';
+  const header = 'Timestamp (ms),' + (type === 0 ? "Angle (deg)" : type === 1 ? "RPM" : "Flow") + '\n';
   const rows = points
-    .map((p) => {
-      return `${p.x * 1000},${p.y}`;
-    })
-    .join('\n');
+  .map((p) => {
+    const yVal = selectedEntry.value?.type === 2 ? Math.abs(p.y) : p.y;
+    return `${(p.x * 1000).toFixed(2)},${yVal.toFixed(2)}`;
+  })
+  .join('\n');
 
   const csv = header + rows;
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -245,7 +247,7 @@ const fetchMeasurements = async (entry: any) => {
 
     seriesData.value = measurements.map((m) => ({
       x: m.time,
-      y: entry.type === 0 ? m.angle : entry.type === 1 ? m.speed : m.speed,
+      y: entry.type === 0 ? m.angle : entry.type === 1 ? m.speed : Math.abs(m.flow ?? 0),
     }));
   } catch (err: any) {
     measurementsError.value =

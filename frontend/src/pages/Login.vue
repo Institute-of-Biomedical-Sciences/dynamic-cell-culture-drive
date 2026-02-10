@@ -3,7 +3,7 @@
     <div class="login-container">
       <div class="login-card">
         <div class="login-header">
-          <h1 class="login-title">New Harvest Control</h1>
+          <h1 class="login-title">Dynamic Cell Culture Drive Control</h1>
           <p class="login-subtitle">Sign in to access the control panel</p>
         </div>
 

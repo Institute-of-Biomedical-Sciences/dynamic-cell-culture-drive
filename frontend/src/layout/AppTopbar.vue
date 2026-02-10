@@ -14,7 +14,7 @@ const generalStatus = ref(null);
 
 setInterval(async () => {
     generalStatus.value = await generalApi.getGeneralStatus();
-}, 1000);
+}, 2000);
 
 const toggle = (event) => {
     menu.value.toggle(event);
@@ -35,24 +35,21 @@ const items = ref([
 <template>
     <div class="layout-topbar">
         <div class="layout-topbar-logo-container">
-            <button class="layout-menu-button layout-topbar-action" @click="toggleMenu">
+            <button class="ml-4 layout-menu-button layout-topbar-action" @click="toggleMenu">
                 <i class="pi pi-bars"></i>
             </button>
             <router-link to="/" class="layout-topbar-logo">
-                <!-- ... existing logo SVG ... -->
-                <svg viewBox="0 0 54 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <!-- ... existing SVG paths ... -->
-                </svg>
-                <span class="text-primary-color font-bold text-2xl">New Harvest</span>
+                <img src="@/assets/images/IoBS.png" alt="IoBS Logo" class="ml-2" style="width: 40px; height: 40px;" />
+                <span style="width: 260px;" class=" text-primary-color font-bold text-xl">Dynamic Cell Culture Drive</span>
             </router-link>
         </div>
         <div class="justify-end flex flex-row gap-2 w-full">
             <!-- Put the progress bar and the text in a flex row -->
                 <!-- progress and span side by side. also take up 100% of the width -->
-                 <div class="flex flex-row gap-2 w-2">
+                 <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;" class="flex flex-row gap-2 w-2">
                     <div class="w-full flex flex-row gap-2" v-if="generalStatus?.tilt?.is_moving">
                     <ProgressBar mode="indeterminate" style="margin-top: 8px; width: 30%; height: 8px" />
-                    <Tag rounded value="Tilt Motor is moving" />
+                    <Tag style="white-space:nowrap; min-width: max-content; padding: 0.35rem 0.6rem;" rounded value="Tilt Motor is moving" />
                     </div>
                     <div class="w-full flex flex-row gap-2" v-if="generalStatus?.rotary?.is_moving">
                     <ProgressBar mode="indeterminate" style="margin-top: 8px; width: 30%; height: 8px" />
@@ -62,8 +59,8 @@ const items = ref([
                     <ProgressBar mode="indeterminate" style="margin-top: 8px; width: 30%; height: 8px" />
                     <Tag rounded value="Peristaltic Motor is moving" />
                     </div>
-                    <div style="margin-left: 34%;" class=" w-full flex flex-row gap-2" v-if="!generalStatus?.tilt?.is_moving && !generalStatus?.rotary?.is_moving && !generalStatus?.peristaltic?.is_moving">
-                    <Tag rounded severity="info" value="All motors are idle" />
+                    <div style="margin-left: 34%;" class="m w-full flex flex-row gap-2" v-if="!generalStatus?.tilt?.is_moving && !generalStatus?.rotary?.is_moving && !generalStatus?.peristaltic?.is_moving">
+                    <Tag style="white-space:nowrap; min-width: max-content; padding: 0.35rem 0.6rem;" rounded severity="info" value="All motors are idle" />
                     </div>
                 </div>
         </div>

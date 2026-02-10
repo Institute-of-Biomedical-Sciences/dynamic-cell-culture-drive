@@ -5,11 +5,11 @@ from app.auth import get_current_active_user
 from app.models import (
     EntryResponse,
     PeristalticCalibration,
+    PeristalticMeasurementResponse,
     PeristalticMotorCalibrationRequest,
     PeristalticRotateRequest,
     PeristalticScenario,
     PeristalticSlopeCompute,
-    RotaryMeasurementResponse,
     RPMCalibrationRequest,
     TubeConfiguration,
     User,
@@ -33,6 +33,7 @@ def calibrate_rotate_motor(
         success = peristaltic_motor_handler.start_rpm_calibration(
             duration=request.duration,
             rpm=request.rpm,
+            direction=request.direction,
         )
         return {"success": success, "message": "Peristaltic motor calibrated."}
     except ValueError as e:
@@ -92,6 +93,7 @@ def calibrate_motor(
             low_rpm_volume=request.low_rpm_volume,
             high_rpm_volume=request.high_rpm_volume,
             name=request.name,
+            diameter=request.diameter,
         )
         return {
             "success": True,
@@ -114,6 +116,7 @@ def update_peristaltic_calibration(
 ):
     """Update a peristaltic calibration."""
     try:
+        print(calibration)
         success = peristaltic_motor_handler.update_peristaltic_calibration(calibration)
         return {"success": success, "message": "Peristaltic calibration updated."}
     except Exception as e:
@@ -365,7 +368,7 @@ def get_peristaltic_entries(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/measurements", response_model=list[RotaryMeasurementResponse])
+@router.get("/measurements", response_model=list[PeristalticMeasurementResponse])
 def get_measurements(
     entry_id: str = Query(..., description="Filter by entry ID (required)"),
     limit: int = Query(1000, description="Maximum number of results"),
@@ -377,10 +380,10 @@ def get_measurements(
             entry_id=entry_id, limit=limit
         )
         return [
-            RotaryMeasurementResponse(
+            PeristalticMeasurementResponse(
                 id=m["id"],
                 entry_id=m["entry_id"],
-                speed=m["speed"],
+                flow=m["flow"],
                 direction=m["direction"],
                 time=m["time"],
             )

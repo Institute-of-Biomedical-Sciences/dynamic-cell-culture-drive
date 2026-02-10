@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     """Application settings."""
 
-    app_name: str = "New Harvest Control Software"
+    app_name: str = "Dynamic Cell Culture Drive"
     version: str = "1.0.0"
     host: str = "0.0.0.0"
     port: int = 8000
@@ -24,10 +24,10 @@ class Settings(BaseSettings):
     access_token_expire_weeks: int = 4
 
     # Database
-    postgres_user: str = "newharvest_user"
+    postgres_user: str = "dynamic-cell-culture-drive_user"
     postgres_password: str = "password"
-    postgres_db: str = "newharvestdb"
-    postgres_host: str = "localhost"
+    postgres_db: str = "dynamic-cell-culture-drive_db"
+    postgres_host: str = "127.0.0.1"
     postgres_port: int = 5432
 
     @property

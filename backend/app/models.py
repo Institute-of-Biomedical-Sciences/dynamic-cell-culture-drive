@@ -120,7 +120,7 @@ class Movement(BaseModel):
 
     duration: int
     direction: str
-    rpm: int
+    rpm: float
 
 
 class RotateMotorRequest(BaseModel):
@@ -208,7 +208,7 @@ class PeristalticMeasurement(BaseModel):
 
     id: int
     entry_id: int
-    speed: float
+    flow: float
     direction: str
     time: float
 
@@ -228,20 +228,21 @@ class PeristalticCalibration(BaseModel):
 
     id: Optional[int]
     duration: int
-    low_rpm: int
-    high_rpm: int
+    low_rpm: float
+    high_rpm: float
     low_rpm_volume: float
     high_rpm_volume: float
     slope: float
     name: str
+    diameter: float
 
 
 class PeristalticSlopeCompute(BaseModel):
     """Peristaltic slope compute model."""
 
     duration: int
-    low_rpm: int
-    high_rpm: int
+    low_rpm: float
+    high_rpm: float
     low_rpm_volume: float
     high_rpm_volume: float
 
@@ -259,15 +260,27 @@ class PeristalticMotorCalibrationRequest(BaseModel):
     """Request model for peristaltic motor calibration."""
 
     duration: int
-    low_rpm: int
-    high_rpm: int
+    low_rpm: float
+    high_rpm: float
     low_rpm_volume: float
     high_rpm_volume: float
     name: str
+    diameter: float
 
 
 class RPMCalibrationRequest(BaseModel):
     """Request model for generic RPM calibration."""
 
     duration: int
-    rpm: int
+    rpm: float
+    direction: str
+
+
+class PeristalticMeasurementResponse(BaseModel):
+    """Peristaltic measurement response model."""
+
+    id: int
+    entry_id: int
+    flow: float
+    direction: str
+    time: float

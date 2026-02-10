@@ -1,7 +1,7 @@
 # Installation and Startup Guide
 
-This guide explains how to install and start the New Harvest Control Software services (backend and
-frontend).
+This guide explains how to install and start the Dynamic Cell Culture Drive Control Software
+services (backend and frontend).
 
 ## Table of Contents
 
@@ -91,33 +91,35 @@ PGADMIN_PASSWORD=your_pgadmin_password
    docker-compose -f docker-compose-win.yml up --build
    ```
 
-This will start both backend and frontend services:
+This will start both backend and frontend services and the database docker container:
 
 - **Backend**: <http://localhost:8000>
 - **Frontend**: <http://localhost:80>
+- **PostgreSQL DB**
 
 ### Creating a Windows Desktop Shortcut (Optional)
 
 If you are using **Windows**, you may configure a batch script to start the required services and
 automatically open the application in your web browser.
 
-1. Edit the start-newharvest.bat file to point to the correct project directory:
+1. Edit the start-dynamic-cell-culture-drive.bat file to point to the correct project directory:
 
-   1.1. Replace **C:\Users\...\your-new-harvest-project-location** with the full path to your local
-   New Harvest project directory.
+   1.1. Replace **C:\Users\...\your-dynamic-cell-culture-drive-project-location** with the full path
+   to your local Dynamic Cell Culture Drive project directory.
 
 2. Once the file has been configured, create a desktop shortcut as follows:
 
    2.1. Right-click on the desktop and select New → Shortcut.
 
-   2.2. When prompted for the shortcut location, browse to and select the start-newharvest.bat file.
+   2.2. When prompted for the shortcut location, browse to and select the
+   start-dynamic-cell-culture-drive.bat file.
 
    2.3. Click Next, provide a name for the shortcut, and select Finish.
 
-> Double-clicking the shortcut will start the Docker services and open the application at
-> <http://localhost:5173> in your default web browser.
+   Double-clicking the shortcut will start the Docker services and open the application at
+   <http://localhost:5173> in your default web browser.
 
-**NOTE!** Opened terminals have to stay open for the services to keep running.
+> [!NOTE] Opened terminals have to stay open for the services to keep running.
 
 ### Individual Docker Containers
 
@@ -125,16 +127,16 @@ automatically open the application in your web browser.
 
 ```bash
 cd backend
-docker build -t newharvest-backend .
-docker run -p 8000:8000 newharvest-backend
+docker build -t dynamic-cell-culture-drive-backend .
+docker run -p 8000:8000 dynamic-cell-culture-drive-backend
 ```
 
 #### Frontend
 
 ```bash
 cd frontend
-docker build -t newharvest-frontend .
-docker run -p 80:80 newharvest-frontend
+docker build -t dynamic-cell-culture-drive-frontend .
+docker run -p 80:80 dynamic-cell-culture-drive-frontend
 ```
 
 ## Development Workflow
