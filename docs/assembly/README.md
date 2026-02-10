@@ -36,7 +36,7 @@ The full Bill of Materials is provided in the file below:
 
 ---
 
-## Module A Assembly
+## Rotary Module Assembly
 
 ### Description
 
@@ -62,7 +62,7 @@ Module A consists of the primary mechanical structure and mounting features.
 
 ---
 
-## Module B Assembly
+## Rocking Motion Module Assembly
 
 ### Description
 
