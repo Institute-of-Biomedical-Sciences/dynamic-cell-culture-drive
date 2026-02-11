@@ -347,7 +347,6 @@ const fetchTubeConfigurations = async () => {
     const response = await peristalticMotorApi.getTubeConfigurations();
     tubeConfigurations.value = response.tube_configurations;
     calibrations.value = await peristalticMotorApi.getPeristalticCalibrations();
-    console.log(calibrations.value);
     for (const calibration of calibrations.value) {
       tubeConfigurations.value.push({
         id: calibration.id,
@@ -357,6 +356,15 @@ const fetchTubeConfigurations = async () => {
         preset: false,
       });
     }
+    // sort tube configurations by id - first presets, then custom
+    tubeConfigurations.value.sort((a, b) => {
+      if (a.preset && !b.preset) {
+        return -1;
+      } else if (!a.preset && b.preset) {
+        return 1;
+      }
+      return 0;
+    });
   } catch (error) {
     console.error("Error fetching tube configurations:", error);
   }

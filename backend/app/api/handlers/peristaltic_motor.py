@@ -349,7 +349,6 @@ class PeristalticMotorHandler:
                         self._lower_speed_gradually(
                             self._current_speed, self._current_direction
                         )
-                        print("JE OD TU?")
                         self._postep.run_sleep(False)
                         while self._rotate_motor_paused:
                             if self._stop_pressed:
@@ -376,7 +375,6 @@ class PeristalticMotorHandler:
                                 )
                             self._resume_pressed = False
                             self._pause_pressed = False
-                            print("se to sploh izvede")
                             self._rotate_motor_paused = False
                             self._movement_start_time = time.time()
                             continue

@@ -203,7 +203,6 @@ def create_rotary_measurements_batch(measurements: List[Dict[str, Any]]) -> int:
     if not measurements:
         return 0
     try:
-        print(measurements)
         with db.get_connection() as conn:
             with conn.cursor() as cur:
                 # Prepare values for batch insert

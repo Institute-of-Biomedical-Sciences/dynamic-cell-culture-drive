@@ -85,7 +85,7 @@ const seriesData = ref([] as Array<{ x: number; y: number }>);
 
 const series = computed(() => [
   {
-    name: selectedEntry.value?.type === 0 ? "Angle" : selectedEntry.value?.type === 1 ? "RPM" : "RPM",
+    name: selectedEntry.value?.type === 0 ? "Angle" : selectedEntry.value?.type === 1 ? "RPM" : "Flow (mL/min)",
     data: seriesData.value,
   },
 ]);

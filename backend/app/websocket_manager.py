@@ -151,10 +151,7 @@ class WebSocketManager:
         """Send a measurement update to all connected clients."""
         await self.broadcast(
             {
-                "type": "tilt",
-                "data": {
-                    "tilt_stopped": True,
-                },
+                "type": "tilt_stopped",
             }
         )
 
@@ -162,10 +159,7 @@ class WebSocketManager:
         """Send a measurement update to all connected clients."""
         await self.broadcast(
             {
-                "type": "rotate",
-                "data": {
-                    "rotate_stopped": True,
-                },
+                "type": "rotate_stopped",
             }
         )
 
@@ -173,10 +167,7 @@ class WebSocketManager:
         """Send a peristaltic stopped update to all connected clients."""
         await self.broadcast(
             {
-                "type": "peristaltic",
-                "data": {
-                    "peristaltic_stopped": True,
-                },
+                "type": "peristaltic_stopped",
             }
         )
 
