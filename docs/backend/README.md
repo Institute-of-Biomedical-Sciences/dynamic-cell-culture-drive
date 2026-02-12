@@ -1,7 +1,6 @@
 # Control Software Backend (API)
 
-Backend API for controlling stepper motors and monitoring real-time diagnostics for the New Harvest
-Control System. Built with FastAPI and designed for hardware-integrated environments.
+Backend API for controlling stepper motors and monitoring real-time diagnostics for the control System. Built with FastAPI and designed for hardware-integrated environments. This repository contains code related to the [New Harvest Control Software](https://github.com/IRNAS/newharvest-incubator-perfusion).
 
 ## Table of Contents
 
