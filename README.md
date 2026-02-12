@@ -67,4 +67,4 @@ License][cc-by-sa].
 ### Acknowledgements
 This work is supported by the European Comission through the FEASTS project  (Project ID 101136749, call HORIZON-CL6-2023-FARM2FORK-01-13).
 
-[logos - feasts, EU]
+![logos - feasts, EU](graphics/logos.png)
