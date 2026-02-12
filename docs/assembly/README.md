@@ -7,12 +7,12 @@ sub-modules, and the final assembled result.
 
 The assembly is divided into two main modules:
 
-- [**Module A**](#module-a-assembly)
-- [**Module B**](#module-b-assembly)
-- [**Module C**](#peristaltic-module-assembly)
+- [**Rotary Module**](#module-a-assembly)
+- [**Rocking Motion Module**](#module-b-assembly)
+- [**Peristaltic Module**](#peristaltic-module-assembly)
 - [**Electronic Box**](#electronic-box)
 
-Follow the steps in order to ensure correct fit and alignment.
+Follow the steps in order to ensure correct fit and alignment. Design files for the respecitve modules can be found [here](https://github.com/Institute-of-Biomedical-Sciences/dynamic-cell-culture-drive/tree/main/Hardware%20design%20files).
 
 ---
 
@@ -36,7 +36,7 @@ The full Bill of Materials is provided in the file below:
 
 ---
 
-## Module A Assembly
+## Rotary Module Assembly
 
 ### Description
 
@@ -62,7 +62,7 @@ Module A consists of the primary mechanical structure and mounting features.
 
 ---
 
-## Module B Assembly
+## Rocking Motion Module Assembly
 
 ### Description
 
