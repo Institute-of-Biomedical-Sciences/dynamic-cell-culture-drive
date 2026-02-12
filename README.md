@@ -12,22 +12,6 @@ This repository contains the documentation for building and using a modular flow
   - closed system with continuous rotation and even nutrient consumption,
   - suitable for suspension cultures and microcarrier-based cultures.
 
-![Figure1](https://github.com/Institute-of-Biomedical-Sciences/dynamic-cell-culture-drive/blob/main/graphics/hardware-photo.jpg)
-
-Figure: Manufactured motion drive modules, from left to right: rocking platform, electronics box, peristaltic pump drive, rotary drive.
-### Authors
-[Boštjan Vihar](mailto:bostjan.vihar@um.si) <sup>1</sup>
-[Jernej Vajda](mailto:jernej.vajda@um.si) <sup>1</sup>
-Nejc Klemenčič <sup>2</sup>
-Bine Zgaga <sup>2</sup>
-Mihael Miško <sup>2</sup>
-Jure Zagoranski <sup>2</sup>
-Luka Mustafa <sup>2</sup>
-
-1 - Institute of Biomedical Sciences, Faculty of Medicine, University of Maribor, Taborska ulica 8, SI-2000, Maribor
-2 - IRNAS Ltd., Limbuška cesta 76b, SI-2000 Maribor
-
-
 ## Assembly and user documentation
 
 The documentation files for this project is listed below. You can find them in the
@@ -43,9 +27,32 @@ The documentation files for this project is listed below. You can find them in t
 - **[Frontend System Information](docs/frontend/README.md)** - Information on frontend system
   functionalities.
 - **[User Guide](docs/user_guide/README.md)** - User Guide on service functionalities.
+- **[Liquid Handling](liquid%20handling)** - Use cases for liquid handling using the different modules.
 - **[Updating Services](docs/services_update/README.md)** - Information on how to update services.
 
 
+![Figure1](https://github.com/Institute-of-Biomedical-Sciences/dynamic-cell-culture-drive/blob/main/graphics/hardware-photo.jpg)
+
+Figure: Manufactured motion drive modules, from left to right: rocking platform, electronics box, peristaltic pump drive, rotary drive.
+
+
+### Authors
+[Boštjan Vihar](mailto:bostjan.vihar@um.si) <sup>1</sup>
+[Jernej Vajda](mailto:jernej.vajda@um.si) <sup>1</sup>
+Nejc Klemenčič <sup>2</sup>
+Bine Zgaga <sup>2</sup>
+Mihael Miško <sup>2</sup>
+Jure Zagoranski <sup>2</sup>
+Luka Mustafa <sup>2</sup>
+
+1 - Institute of Biomedical Sciences, Faculty of Medicine, University of Maribor, Taborska ulica 8, SI-2000, Maribor
+2 - IRNAS Ltd., Limbuška cesta 76b, SI-2000 Maribor
+
+
+### Acknowledgements
+This work is supported by the European Comission through the FEASTS project  (Project ID 101136749, call HORIZON-CL6-2023-FARM2FORK-01-13).
+
+![logos - feasts, EU](graphics/logos.png)
 
 ### License
 
@@ -62,7 +69,4 @@ License][cc-by-sa].
 
 
 
-### Acknowledgements
-This work is supported by the European Comission through the FEASTS project  (Project ID 101136749, call HORIZON-CL6-2023-FARM2FORK-01-13).
 
-![logos - feasts, EU](graphics/logos.png)
