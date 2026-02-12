@@ -1,6 +1,6 @@
-# New Harvest Control Software User Interface
+# Control Software User Interface
 
-The user interface for controlling New Harvest system and it's individual components. Enables
+The user interface for controlling the system and it's individual components. Enables
 real-time component data, health monitoring and component control.
 
 ## Features
