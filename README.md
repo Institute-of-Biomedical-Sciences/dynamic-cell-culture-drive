@@ -12,7 +12,7 @@ This repository contains the documentation for building and using a modular flow
   - closed system with continuous rotation and even nutrient consumption,
   - suitable for suspension cultures and microcarrier-based cultures.
 
-After manufacturing and assembly, the respective modules can be set-up inside a standard cell culture incubator to drive dynamic cell culture experiments. One module can be connected to the controlling electronics at a time, but can be exchanged modularily. The graphical user interface for crontrolling and logging experiments are accessed through a web app that updates via this repository. 
+After manufacturing and assembly, the respective modules can be set-up inside a standard cell culture incubator to drive dynamic cell culture experiments. One module can be connected to the controlling electronics at a time, but can be exchanged modularily. The graphical user interface for crontrolling and logging experiments are accessed through a web app that updates via this repository. The hardware is shown in Figure 1 and the graphical user interface for the rocking motion module is shown in Figure 2.
 
 ## Assembly and user documentation
 
@@ -33,10 +33,12 @@ The documentation files for this project is listed below. You can find them in t
 - **[Updating Services](docs/services_update/README.md)** - Information on how to update services.
 
 
-![Figure1](https://github.com/Institute-of-Biomedical-Sciences/dynamic-cell-culture-drive/blob/main/graphics/hardware-photo.jpg)
+![Figure1](graphics/hardware-photo.jpg)
+Figure 1: Manufactured motion drive modules, from left to right: rocking platform, electronics box, peristaltic pump drive, rotary drive.
 
-Figure: Manufactured motion drive modules, from left to right: rocking platform, electronics box, peristaltic pump drive, rotary drive.
 
+![GUI](graphics/GUI.png)
+Figure 2: Graphical user interface for the rocking motion module showing configuration parameters in the left pannel and a real time graph of angle positions on the right.
 
 ### Authors
 [Boštjan Vihar](mailto:bostjan.vihar@um.si) <sup>1</sup>
