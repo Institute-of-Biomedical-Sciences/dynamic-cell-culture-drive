@@ -12,6 +12,8 @@ This repository contains the documentation for building and using a modular flow
   - closed system with continuous rotation and even nutrient consumption,
   - suitable for suspension cultures and microcarrier-based cultures.
 
+After manufacturing and assembly, the respective modules can be set-up inside a standard cell culture incubator to drive dynamic cell culture experiments. One module can be connected to the controlling electronics at a time, but can be exchanged modularily. The graphical user interface for crontrolling and logging experiments are accessed through a web app that updates via this repository. 
+
 ## Assembly and user documentation
 
 The documentation files for this project is listed below. You can find them in the
