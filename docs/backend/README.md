@@ -1,4 +1,4 @@
-# New Harvest Control Software Backend (API)
+# Control Software Backend (API)
 
 Backend API for controlling stepper motors and monitoring real-time diagnostics for the New Harvest
 Control System. Built with FastAPI and designed for hardware-integrated environments.
