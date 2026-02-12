@@ -40,7 +40,7 @@ The full Bill of Materials is provided in the file below:
 
 ### Description
 
-Module A consists of the primary mechanical structure and mounting features.
+The rotary module consists of the primary mechanical structure and mounting features.
 
 ### Exploded View
 
@@ -48,7 +48,7 @@ Module A consists of the primary mechanical structure and mounting features.
 
 ### Assembly Steps
 
-1. Identify all Module A components using the [BOM](#bill-of-materials-bom).
+1. Identify all Rotary module components using the [BOM](#bill-of-materials-bom).
 2. Assemble the base frame components.
 3. Install bearings and shafts.
 4. Secure fasteners to the specified torque.
@@ -66,7 +66,7 @@ Module A consists of the primary mechanical structure and mounting features.
 
 ### Description
 
-Module B contains the secondary mechanisms and interfaces with Module A.
+The rocking motion module contains the secondary mechanisms and interfaces with the rotary module.
 
 ### Exploded View
 
@@ -74,15 +74,15 @@ Module B contains the secondary mechanisms and interfaces with Module A.
 
 ### Assembly Steps
 
-1. Lay out all Module B components.
+1. Lay out all Rocking motion module components.
 2. Assemble internal subcomponents.
-3. Attach Module B to Module A.
+3. Attach platform to motor adapter.
 4. Secure mounting fasteners.
 5. Verify mechanical engagement.
 
 ### Checks
 
-- Proper alignment with Module A
+- Proper alignment with motor adapter
 - Smooth actuation
 - No interference between components
 
@@ -132,7 +132,7 @@ Peristaltic consists of the peristaltic mechanical structure and mounting featur
 The electronics box provides power distribution and control for the mechanical modules. It houses
 the power supply, motor driver(s), and interface electronics required to operate the stepper motors.
 
-All electrical connections to **Module A** and **Module B** are routed through this enclosure to
+All electrical connections to **the rotary module** and **rocking motion module** are routed through this enclosure to
 ensure a clean, protected, and serviceable installation.
 
 ### Electronic Box Assembled
