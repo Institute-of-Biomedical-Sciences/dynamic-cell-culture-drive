@@ -1,6 +1,6 @@
-# New Harvest Control Software
+# Control Software
 
-This repository contains code related to the New Harvest Control Software.
+This repository contains code related to the [New Harvest Control Software](https://github.com/IRNAS/newharvest-incubator-perfusion).
 
 ## Hardware requirements
 
