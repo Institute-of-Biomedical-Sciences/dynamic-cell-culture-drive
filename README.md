@@ -12,8 +12,6 @@ This repository contains the documentation for building and using a modular flow
   - closed system with continuous rotation and even nutrient consumption,
   - suitable for suspension cultures and microcarrier-based cultures.
 
-[foto sestava]
-
 ![Figure1](https://github.com/Institute-of-Biomedical-Sciences/dynamic-cell-culture-drive/blob/main/graphics/hardware-photo.jpg)
 
 Figure: Manufactured motion drive modules, from left to right: rocking platform, electronics box, peristaltic pump drive, rotary drive.
