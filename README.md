@@ -1,6 +1,6 @@
 # Modular perfusion and motion drive for dynamic cell culture experiments
 
-This repository contains the documentation for building and using a modular flow set-up designed to support multiple modes of dynamic cell culture. It is operable inside standard incubators without affecting internal conditions (e.g., temperature increase, contaminant formation) and is compatible with standard cell culture workflows. The described system allows three modes of perfusion or nutrient exchange for 3D cell culture models:
+This repository contains the documentation for building and using a modular flow set-up designed to support multiple modes of dynamic cell culture. It is operable inside standard cell culture incubators (37°C, 5% CO<sub>2</sub>, high humidity) without affecting internal conditions (e.g., temperature increase, contaminant formation) and is compatible with standard cell culture workflows. The described system allows three modes of perfusion or nutrient exchange for 3D cell culture models:
 1.	Peristaltic pumping
   - standard method in laboratory and industrial environments,
   - enables controlled medium exchange and shear force generation,
@@ -27,7 +27,7 @@ The documentation files for this project is listed below. You can find them in t
 - **[Frontend System Information](docs/frontend/README.md)** - Information on frontend system
   functionalities.
 - **[User Guide](docs/user_guide/README.md)** - User Guide on service functionalities.
-- **[Liquid Handling](liquid%20handling)** - Use cases for liquid handling using the different modules.
+- **[Liquid Handling Use Cases](liquid%20handling)** - Use cases for liquid handling using the different modules.
 - **[Updating Services](docs/services_update/README.md)** - Information on how to update services.
 
 
