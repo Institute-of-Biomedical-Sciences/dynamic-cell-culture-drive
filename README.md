@@ -38,8 +38,8 @@ Figure: Manufactured motion drive modules, from left to right: rocking platform,
 
 ### Authors
 [Boštjan Vihar](mailto:bostjan.vihar@um.si) <sup>1</sup>
-[Jernej Vajda](mailto:jernej.vajda@um.si) <sup>1</sup>
-Nejc Klemenčič <sup>2</sup>
+Jernej Vajda <sup>1</sup>
+[Nejc Klemenčič](mailto:klemencic.nejcc@gmail.com) <sup>2</sup>
 Bine Zgaga <sup>2</sup>
 Mihael Miško <sup>2</sup>
 Jure Zagoranski <sup>2</sup>
