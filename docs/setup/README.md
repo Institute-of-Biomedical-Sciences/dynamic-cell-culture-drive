@@ -1,7 +1,3 @@
-# Control Software
-
-This repository contains code related to the [New Harvest Control Software](https://github.com/IRNAS/newharvest-incubator-perfusion).
-
 ## Hardware requirements
 
 - PoStep60-256 Stepper motor driver. _TODO_ Verify the stepper motors used in the project.
@@ -24,3 +20,7 @@ This repository contains code related to the [New Harvest Control Software](http
 
 1. Refer to the **[Installation Guide](../INSTALLATION.md)** - How to install and start the backend
    and frontend services
+
+## Control Software
+
+This repository contains code related to the [New Harvest Control Software](https://github.com/IRNAS/newharvest-incubator-perfusion).
