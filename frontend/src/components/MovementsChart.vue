@@ -43,11 +43,32 @@ const entryId = ref(0);
 const handleToolbarClick = async (event: MouseEvent) => {
   const target = event.target as HTMLElement;
   if (target.closest('.apexcharts-toolbar')) {
-    if(!props.isMoving) {
-      series.value[0].data = await fetchMeasurements(entryId.value, props.type ?? 0);
+    if (!props.isMoving) {
+      const newData = await fetchMeasurements(entryId.value, props.type ?? 0);
+      if (newData) {
+        seriesData.value = newData;
+        series.value[0].data = decimateToMax(seriesData.value, 1000);
+      } else {
+        seriesData.value = [];
+        series.value[0].data = [];
+      }
     }
   }
 };
+
+function decimateToMax(
+  data: Array<{ x: number; y: number }>,
+  maxPoints: number
+): Array<{ x: number; y: number }> {
+  if (data.length <= maxPoints) return data;
+  const result: Array<{ x: number; y: number }> = [];
+  const step = (data.length - 1) / (maxPoints - 1);
+  for (let i = 0; i < maxPoints; i++) {
+    const index = i === maxPoints - 1 ? data.length - 1 : Math.round(i * step);
+    result.push(data[index]);
+  }
+  return result;
+}
 // fetch measurements from the database depending on the type of entry
 const fetchMeasurements = async (entryId: number, type: number) => {
 
@@ -91,15 +112,8 @@ let socket: WebSocket | null = null;
 
 const showFilenameModal = ref(false);
 const filenamePrefix = ref('');
-
+const seriesData = ref([] as Array<{ x: number; y: number }>);
 const series = ref([
-  {
-    name: props.type === 0 ? "Angle" : props.type === 1 ? "RPM" : "Flow (mL/min)",
-    data: [] as Array<{ x: number; y: number }>,
-  },
-]);
-
-const fullSeries = ref([
   {
     name: props.type === 0 ? "Angle" : props.type === 1 ? "RPM" : "Flow (mL/min)",
     data: [] as Array<{ x: number; y: number }>,
@@ -212,7 +226,7 @@ const downloadCsv = (customFilename?: string) => {
     showError("Motor is moving. Please stop it before downloading the CSV.");
     return;
   }
-  const points = series.value[0].data;
+  const points = seriesData.value;
   const header = 'Timestamp (ms),' + (props.type === 0 ? "Angle (deg)" : props.type === 1 ? "RPM" : "Flow (mL/min)") + '\n';
   const rows = points
   .map((p) => {
