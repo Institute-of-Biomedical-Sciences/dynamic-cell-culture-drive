@@ -43,6 +43,7 @@ Figure 2: Graphical user interface for the rocking motion module showing configu
 ### Authors
 [Boštjan Vihar](mailto:bostjan.vihar@um.si) <sup>1</sup>
 Jernej Vajda <sup>1</sup>
+Uroš Maver <sup>1</sup>
 [Nejc Klemenčič](mailto:klemencic.nejcc@gmail.com) <sup>2</sup>
 Bine Zgaga <sup>2</sup>
 Mihael Miško <sup>2</sup>
@@ -51,7 +52,7 @@ Luka Mustafa <sup>2</sup>
 
 1 - Institute of Biomedical Sciences, Faculty of Medicine, University of Maribor, Taborska ulica 8, SI-2000, Maribor
 
-2 - IRNAS Ltd., Limbuška cesta 76b, SI-2000 Maribor
+2 - DEWESoft RealTime Ltd., Limbuška cesta 76b, SI-2000 Maribor
 
 
 ### Acknowledgements
