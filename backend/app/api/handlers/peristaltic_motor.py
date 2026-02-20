@@ -692,7 +692,7 @@ class PeristalticMotorHandler:
 
     def get_measurements(self, entry_id: int, limit: int = 100) -> list[Dict[str, Any]]:
         """Get peristaltic measurements for an entry."""
-        return get_measurements(entry_id, limit)
+        return get_measurements(entry_id=entry_id, limit=limit)
 
     # ---------------------------------------------------------
     # Cleanup
