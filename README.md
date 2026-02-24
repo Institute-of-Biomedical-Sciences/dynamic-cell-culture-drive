@@ -14,6 +14,8 @@ This repository contains the documentation for building and using a modular flow
 
 After manufacturing and assembly, the respective modules can be set-up inside a standard cell culture incubator to drive dynamic cell culture experiments. One module can be connected to the controlling electronics at a time, but can be exchanged modularily. The graphical user interface for crontrolling and logging experiments are accessed through a web app that updates via this repository. The hardware is shown in Figure 1 and the graphical user interface for the rocking motion module is shown in Figure 2.
 
+[![DOI](https://zenodo.org/badge/1110627586.svg)](https://doi.org/10.5281/zenodo.18764214)
+
 ## Assembly and user documentation
 
 The documentation files for this project is listed below. You can find them in the
