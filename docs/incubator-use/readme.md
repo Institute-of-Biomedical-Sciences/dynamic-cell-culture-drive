@@ -1,5 +1,5 @@
 # Installation and use
-The perfusion drive modules can be installed and used in compatible cell culture incubators that have an access port in the back side. The plug for translating the cable and connector while preventing leakage in this repository is compatible with ports 31mm in diameter and 45-50mm in length. To accommodate different port dimensions, the cable plug [step file]() can be modified.
+The perfusion drive modules can be installed and used in compatible cell culture incubators that have an access port in the back side. The plug for translating the cable and connector while preventing leakage in this repository is compatible with ports 31mm in diameter and 45-50mm in length. To accommodate different port dimensions, the cable plug [step file](cable-plug.step) can be modified.
 
 ### Required materials:
 [**Mechanical assembly and control box**](/dynamic-cell-culture-drive/blob/main/docs/assembly/README.md)
