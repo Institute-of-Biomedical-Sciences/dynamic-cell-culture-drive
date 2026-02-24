@@ -19,16 +19,13 @@ After manufacturing and assembly, the respective modules can be set-up inside a 
 The documentation files for this project is listed below. You can find them in the
 **[Docs](./docs/)** folder.
 
-- **[Installation Guide](docs/INSTALLATION.md)** - How to install and start the backend and frontend
-  services.
-- **[Assembly Guide](docs/assembly/README.md)** - Mechanical assembly of the project.
-- **[Electronics Hardware Setup Guide](docs/setup/README.md)** - Hardware setup for system configuration
-  services.
-- **[Backend System Information](docs/backend/README.md)** - Information on backend system
-  functionalities.
-- **[Frontend System Information](docs/frontend/README.md)** - Information on frontend system
-  functionalities.
-- **[User Guide](docs/user_guide/README.md)** - User Guide on service functionalities.
+- **[Mechanical Assembly Guide](docs/assembly/README.md)** - Mechanical assembly of the project.
+- **[Electronics Hardware Setup Guide](docs/setup/README.md)** - Hardware setup for system configuration services.
+- **[Software Installation Guide](docs/INSTALLATION.md)** - How to install and start the backend and frontend services.
+- **[Backend System Information](docs/backend/README.md)** - Information on backend system functionalities.
+- **[Frontend System Information](docs/frontend/README.md)** - Information on frontend system functionalities.
+- **[Incubator installation and use](docs/incubator-use/readme.md)** - Guide to installing and using the perfusion modules inside cell culture incubators.
+- **[GUI User Guide](docs/user_guide/README.md)** - GUI User Guide on service functionalities.
 - **[Liquid Handling Use Cases](liquid%20handling)** - Use cases for liquid handling using the different modules.
 - **[Updating Services](docs/services_update/README.md)** - Information on how to update services.
 
