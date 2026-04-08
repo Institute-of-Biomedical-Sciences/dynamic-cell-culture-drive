@@ -1,3 +1,6 @@
+import os
+
+from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
 
 
@@ -23,10 +26,12 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     access_token_expire_weeks: int = 4
 
+    load_dotenv()  # Load environment variables from .env file
+
     # Database
-    postgres_user: str = "dynamic-cell-culture-drive_user"
-    postgres_password: str = "password"
-    postgres_db: str = "dynamic-cell-culture-drive_db"
+    postgres_user: str = os.getenv("POSTGRES_USER", "dynamic-cell-culture-drive_user")
+    postgres_password: str = os.getenv("POSTGRES_PASSWORD", "password")
+    postgres_db: str = os.getenv("POSTGRES_DB", "dynamic-cell-culture-drive_db")
     postgres_host: str = "127.0.0.1"
     postgres_port: int = 5432
 

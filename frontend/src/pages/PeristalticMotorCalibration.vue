@@ -12,9 +12,9 @@
 							<StepList>
 								<Step value="1">Calibration Overview</Step>
 								<Step value="2">Duration Selection</Step>
-								<Step value="3">Low RPM</Step>
-								<Step value="4">High RPM</Step>
-								<Step value="5">File Selection</Step>
+								<Step :disabled="!peristalticMotorCalibration.duration || !peristalticMotorCalibration.direction || !peristalticMotorCalibration.diameter" value="3">Low RPM</Step>
+								<Step :disabled="!peristalticMotorCalibration.low_rpm_volume" value="4">High RPM</Step>
+								<Step :disabled="!peristalticMotorCalibration.high_rpm_volume" value="5">File Selection</Step>
 							</StepList>
 							<StepPanels class=" step-panels-container">
 								<StepPanel v-slot="{ activateCallback }" value="1" class="step-panel">
@@ -93,7 +93,7 @@
 									</div>
 									<div class="flex mt-2 pt-6 justify-between">
 										<Button label="Back" severity="secondary" icon="pi pi-arrow-left" @click="activateCallback('1'); durationProgress = 0" />
-										<Button :disabled="peristalticMotorCalibration.duration === null || peristalticMotorCalibration.duration < 0" label="Next" icon="pi pi-arrow-right" iconPos="right" @click="setCalibrationDuration(); activateCallback('3'); durationProgress = 0" />
+										<Button :disabled="peristalticMotorCalibration.duration === null || peristalticMotorCalibration.direction === null || peristalticMotorCalibration.diameter === null" label="Next" icon="pi pi-arrow-right" iconPos="right" @click="setCalibrationDuration(); activateCallback('3'); durationProgress = 0" />
 									</div>
 								</StepPanel>
 								<StepPanel v-slot="{ activateCallback }" value="3">

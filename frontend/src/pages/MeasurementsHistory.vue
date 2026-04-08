@@ -79,14 +79,13 @@ const selectedEntry = ref<EntryResponse | null>(null);
 const measurementsError = ref<string | null>(null);
 const showFilenameModal = ref(false);
 const filenamePrefix = ref('');
-const maxDataPoints = 1000;
 
 const seriesData = ref([] as Array<{ x: number; y: number }>);
 
 const series = computed(() => [
   {
-    name: selectedEntry.value?.type === 0 ? "Angle" : selectedEntry.value?.type === 1 ? "RPM" : "RPM",
-    data: seriesData.value,
+    name: selectedEntry.value?.type === 0 ? "Angle" : selectedEntry.value?.type === 1 ? "RPM" : "Flow (mL/min)",
+    data: decimateToMax(seriesData.value, 1000),
   },
 ]);
 
@@ -228,46 +227,64 @@ const fetchEntries = async () => {
   }
 };
 
+function decimateToMax(
+  data: Array<{ x: number; y: number }>,
+  maxPoints: number
+): Array<{ x: number; y: number }> {
+  if (data.length <= maxPoints) return data;
+  const result: Array<{ x: number; y: number }> = [];
+  const step = (data.length - 1) / (maxPoints - 1);
+  for (let i = 0; i < maxPoints; i++) {
+    const index = i === maxPoints - 1 ? data.length - 1 : Math.round(i * step);
+    result.push(data[index]);
+  }
+  return result;
+}
+
 const fetchMeasurements = async (entry: any) => {
   if (!entry) {
     seriesData.value = [];
-    return;
+    return [];
   }
 
   try {
     measurementsError.value = null;
     let measurements: any[] = [];
     if (entry.type === 0) {
-      measurements = await tiltMotorApi.getMeasurements(entry.id, entry.scenario_id, maxDataPoints);
+      measurements = await tiltMotorApi.getMeasurements(entry.id, entry.scenario_id, 100000);
     } else if (entry.type === 1) {
-      measurements = await rotaryMotorApi.getMeasurements(entry.id, entry.scenario_id, maxDataPoints);
+      measurements = await rotaryMotorApi.getMeasurements(entry.id, entry.scenario_id, 100000);
     } else if (entry.type === 2) {
-      measurements = await peristalticMotorApi.getMeasurements(entry.id, entry.scenario_id, maxDataPoints);
+      measurements = await peristalticMotorApi.getMeasurements(entry.id, entry.scenario_id, 100000);
     }
 
     seriesData.value = measurements.map((m) => ({
       x: m.time,
       y: entry.type === 0 ? m.angle : entry.type === 1 ? m.speed : Math.abs(m.flow ?? 0),
     }));
+    return seriesData.value;
   } catch (err: any) {
     measurementsError.value =
       err.response?.data?.detail ||
       err.message ||
       "Failed to fetch measurements";
     console.error("Error fetching measurements:", err);
-    seriesData.value = [];
+    return [];
   }
 };
 
 watch(
   () => selectedEntry.value,
-  (newEntry) => {
+  async (newEntry) => {
     if (newEntry) {
-      fetchMeasurements(newEntry);
+      const newData = await fetchMeasurements(newEntry);
+      if (newData) {
+        seriesData.value = newData;
     } else {
       seriesData.value = [];
     }
   }
+},
 );
 
 onMounted(() => {

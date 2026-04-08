@@ -153,10 +153,20 @@ docker run -p 80:80 dynamic-cell-culture-drive-frontend
 
 2. **Terminal - Frontend**:
 
-   ```bash
-   cd frontend
-   npm run dev
-   ```
+To run the application in `debug` mode run the following:
+
+```bash
+cd frontend
+npm run dev
+```
+
+To run it in production preview (less RAM usage) use:
+
+```bash
+cd frontend
+npm run build
+npm run preview -- --port 5173
+```
 
 ### Accessing the Application
 

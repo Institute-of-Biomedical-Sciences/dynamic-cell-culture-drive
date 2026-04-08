@@ -25,7 +25,7 @@ class Postep256Handler:
         max_speed: int = 40000,
         max_accel: int = 40000,
         max_decel: int = 40000,
-        log_level: str = "INFO",
+        log_level: str = "ERROR",
         device_index: int = 0,
     ) -> None:
         """Initialize the shared PoStep256 USB device (only once).
@@ -52,7 +52,6 @@ class Postep256Handler:
                 print("Initializing shared PoStep256 USB device...")
 
                 serial_number = PoStep256USB.discover_devices()
-                print("devices", serial_number)
                 if len(serial_number) == 0:
                     raise Exception("No PoStep256 Motor USB device found.")
 

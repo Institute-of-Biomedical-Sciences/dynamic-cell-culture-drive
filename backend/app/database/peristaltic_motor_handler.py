@@ -420,7 +420,6 @@ def create_peristaltic_measurements_batch(measurements: List[Dict[str, Any]]) ->
 
 def get_measurements(
     entry_id: Optional[str] = None,
-    peristaltic_scenario_id: Optional[str] = None,
     limit: int = 1000,
 ) -> List[Dict[str, Any]]:
     """Get peristaltic measurements with optional filters."""

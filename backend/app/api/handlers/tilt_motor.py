@@ -473,7 +473,7 @@ class TiltMotorHandler:
         self._postep.get_driver_settings()
         self._postep.set_driver_settings(step_mode=2, microstep=2)
         time.sleep(0.2)
-        self._postep.set_requested_speed(400, "cw")
+        self._postep.set_requested_speed(400, "ccw")
         while True:
             stream_data = self._postep.read_stream()
             if stream_data and "endswitch" in stream_data:
@@ -484,7 +484,7 @@ class TiltMotorHandler:
                     break
         self._postep.move_reset_to_zero()
         time.sleep(0.2)
-        self._postep.set_requested_speed(400, "ccw")
+        self._postep.set_requested_speed(400, "cw")
         time.sleep(0.9)
         self._postep.set_requested_speed(0)
         self._postep.run_sleep(False)

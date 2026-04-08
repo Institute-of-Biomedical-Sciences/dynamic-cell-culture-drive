@@ -107,32 +107,39 @@ INSERT INTO tube_configurations (name, diameter, flow_rate, preset) VALUES ('1.5
 INSERT INTO tube_configurations (name, diameter, flow_rate, preset) VALUES ('2.00mm Tube', 2.00, 0.503349824, TRUE) ON CONFLICT DO NOTHING;
 
 -- Add constraints
-ALTER TABLE tilt_entry_table DROP CONSTRAINT IF EXISTS unique_entry_name;
-ALTER TABLE tilt_entry_table ADD CONSTRAINT unique_entry_name UNIQUE (name);
+ALTER TABLE tilt_entry_table DROP CONSTRAINT IF EXISTS unique_tilt_entry_name;
+ALTER TABLE tilt_entry_table ADD CONSTRAINT unique_tilt_entry_name UNIQUE (name);
 ALTER TABLE tilt_entry_table ADD CONSTRAINT fk_tilt_scenario_id FOREIGN KEY (tilt_scenario_id) REFERENCES tilt_scenarios(id);
 
 ALTER TABLE tilt_scenarios DROP CONSTRAINT IF EXISTS unique_scenario_name;
-CREATE UNIQUE INDEX IF NOT EXISTS unique_active_scenario_name
+CREATE UNIQUE INDEX IF NOT EXISTS unique_active_tilt_scenario_name
     ON tilt_scenarios (name)
     WHERE is_active = TRUE;
 
-ALTER TABLE tilt_measurements ADD CONSTRAINT fk_entry_id FOREIGN KEY (entry_id) REFERENCES tilt_entry_table(id);
+ALTER TABLE tilt_measurements ADD CONSTRAINT fk_tilt_entry_id FOREIGN KEY (entry_id) REFERENCES tilt_entry_table(id);
 
+ALTER TABLE rotation_entry_table DROP CONSTRAINT IF EXISTS unique_rotary_entry_name;
+ALTER TABLE rotation_entry_table ADD CONSTRAINT unique_rotary_entry_name UNIQUE (name);
 ALTER TABLE rotation_entry_table ADD CONSTRAINT fk_rotary_scenario_id FOREIGN KEY (rotary_scenario_id) REFERENCES rotary_scenarios(id);
-ALTER TABLE rotation_entry_table ADD CONSTRAINT unique_entry_name UNIQUE (name);
-ALTER TABLE rotation_entry_table ADD CONSTRAINT fk_entry_id FOREIGN KEY (entry_id) REFERENCES rotation_entry_table(id);
 
 ALTER TABLE rotary_scenarios DROP CONSTRAINT IF EXISTS unique_scenario_name;
-ALTER TABLE rotary_scenarios ADD CONSTRAINT unique_scenario_name UNIQUE (name);
+CREATE UNIQUE INDEX IF NOT EXISTS unique_active_rotary_scenario_name
+    ON rotary_scenarios (name)
+    WHERE is_active = TRUE;
 
-ALTER TABLE rotary_measurements ADD CONSTRAINT fk_entry_id FOREIGN KEY (entry_id) REFERENCES rotation_entry_table(id);
+ALTER TABLE rotary_measurements ADD CONSTRAINT fk_rotary_entry_id FOREIGN KEY (entry_id) REFERENCES rotation_entry_table(id);
 
+ALTER TABLE peristaltic_entry_table DROP CONSTRAINT IF EXISTS unique_peristaltic_entry_name;
+ALTER TABLE peristaltic_entry_table ADD CONSTRAINT unique_peristaltic_entry_name UNIQUE (name);
 ALTER TABLE peristaltic_entry_table ADD CONSTRAINT fk_peristaltic_scenario_id FOREIGN KEY (peristaltic_scenario_id) REFERENCES peristaltic_scenarios(id);
-ALTER TABLE peristaltic_entry_table ADD CONSTRAINT unique_entry_name UNIQUE (name);
-ALTER TABLE peristaltic_entry_table ADD CONSTRAINT fk_entry_id FOREIGN KEY (entry_id) REFERENCES peristaltic_entry_table(id);
 
 ALTER TABLE peristaltic_scenarios DROP CONSTRAINT IF EXISTS unique_scenario_name;
-ALTER TABLE peristaltic_scenarios ADD CONSTRAINT unique_scenario_name UNIQUE (name);
+CREATE UNIQUE INDEX IF NOT EXISTS unique_active_peristaltic_scenario_name
+    ON peristaltic_scenarios (name)
+    WHERE is_active = TRUE;
+
+ALTER TABLE peristaltic_measurements ADD CONSTRAINT fk_peristaltic_entry_id FOREIGN KEY (entry_id) REFERENCES peristaltic_entry_table(id);
+
 
 SELECT create_hypertable('tilt_measurements', 'time', if_not_exists => TRUE);
 SELECT create_hypertable('rotary_measurements', 'time', if_not_exists => TRUE);

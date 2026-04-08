@@ -443,11 +443,9 @@ const setupWebSocket = () => {
   socket.value.onopen = () => {};
   socket.value.onmessage = (event: MessageEvent) => {
     const msg = JSON.parse(event.data);
-    if (msg.type === "tilt") {
-      if (msg.data.tilt_stopped) {
-        isTilting.value = false;
-        tiltPaused.value = false;
-      }
+    if (msg.type === "tilt_stopped") {
+      isTilting.value = false;
+      tiltPaused.value = false;
     }
   };
 };
@@ -585,7 +583,11 @@ const handleUpdateScenario = async () => {
       showSuccess("Scenario updated successfully.")
     }
   } catch (err: any) {
-    showError("Error with updating scenario.");
+    if (err.response.status === 422) {
+      showError("Error with updating scenario. Fields missing.");
+    } else {
+      showError("Error with updating scenario.");
+    }
   }
 };
 
@@ -596,16 +598,26 @@ const handleSaveScenario = async () => {
       ...runConfiguration.value,
     });
     if (response.success) {
-      showSuccess("Scenario saved successfully.");
       await fetchScenarios();
+      showSuccess("Scenario saved successfully.");
       loadScenario(scenarios.value.find(scenario => scenario.id === response.tilt_scenario_id) as MoveScenario);
     }
   } catch (err: any) {
+    console.error("Error with saving scenario:", err.response.data.detail);
     if (err.response.status === 500) {
-      showError("Error with saving scenario. Scenario name is required.");
+      if (err.response.data.detail.includes("duplicate key")){
+        showError("Error with saving scenario. Scenario name already exists.");
+      }
+      else {
+        showError("Error with saving scenario. Scenario name is required.");
+      }
     }
     else if (err.response.status === 422) {
-    showError("Error with saving scenario. Fields missing.");
+      if (err.response.data.detail.length > 1) {
+        showError("Error with saving scenario. Fields missing.");
+      } if (err.response.data.detail.length === 1){
+        showError("Error with saving scenario. " + err.response.data.detail[0].loc[1] + " " + err.response.data.detail[0].msg);
+      }
     }
     else {
       showError("Error with saving scenario.");

@@ -24,6 +24,7 @@
 <script setup lang="ts">
 	import Toast from 'primevue/toast';
 	import { useToast } from 'primevue/usetoast';
+  import { tiltMotorApi, rotaryMotorApi, peristalticMotorApi } from "../api";
 	const toast = useToast();
 	const showError = (message: string) => {
 	  toast.add({
@@ -38,15 +39,57 @@ import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import FilenameModal from "./FilenameModal.vue";
 //endTimestamp in ISO 8601 format
 const chartContainer = ref<HTMLElement | null>(null);
-
-const handleToolbarClick = (event: MouseEvent) => {
+const entryId = ref(0);
+const handleToolbarClick = async (event: MouseEvent) => {
   const target = event.target as HTMLElement;
   if (target.closest('.apexcharts-toolbar')) {
-    if(!props.isMoving) {
-      series.value[0].data = fullSeries.value[0].data;
+    if (!props.isMoving) {
+      const newData = await fetchMeasurements(entryId.value, props.type ?? 0);
+      if (newData) {
+        seriesData.value = newData;
+        series.value[0].data = decimateToMax(seriesData.value, 1000);
+      } else {
+        seriesData.value = [];
+        series.value[0].data = [];
+      }
     }
   }
 };
+
+function decimateToMax(
+  data: Array<{ x: number; y: number }>,
+  maxPoints: number
+): Array<{ x: number; y: number }> {
+  if (data.length <= maxPoints) return data;
+  const result: Array<{ x: number; y: number }> = [];
+  const step = (data.length - 1) / (maxPoints - 1);
+  for (let i = 0; i < maxPoints; i++) {
+    const index = i === maxPoints - 1 ? data.length - 1 : Math.round(i * step);
+    result.push(data[index]);
+  }
+  return result;
+}
+// fetch measurements from the database depending on the type of entry
+const fetchMeasurements = async (entryId: number, type: number) => {
+
+  try {
+    let measurements: any[] = [];
+    if (props.type === 0) {
+      measurements = await tiltMotorApi.getMeasurements(entryId, null, 100000);
+    } else if (props.type === 1) {
+      measurements = await rotaryMotorApi.getMeasurements(entryId, null, 100000);
+    } else if (props.type === 2) {
+      measurements = await peristalticMotorApi.getMeasurements(entryId, null, 100000);
+    }
+    return measurements.map((m) => ({
+      x: m.time,
+      y: props.type === 0 ? m.angle : props.type === 1 ? m.speed : Math.abs(m.flow ?? 0),
+    }));
+  } catch (err: any) {
+  }
+};
+
+
 const endTimestamp = ref('');
 const props = defineProps<{
   entryId?: number;
@@ -69,15 +112,8 @@ let socket: WebSocket | null = null;
 
 const showFilenameModal = ref(false);
 const filenamePrefix = ref('');
-
+const seriesData = ref([] as Array<{ x: number; y: number }>);
 const series = ref([
-  {
-    name: props.type === 0 ? "Angle" : props.type === 1 ? "RPM" : "Flow (mL/min)",
-    data: [] as Array<{ x: number; y: number }>,
-  },
-]);
-
-const fullSeries = ref([
   {
     name: props.type === 0 ? "Angle" : props.type === 1 ? "RPM" : "Flow (mL/min)",
     data: [] as Array<{ x: number; y: number }>,
@@ -87,7 +123,7 @@ const fullSeries = ref([
 const chartOptions = ref({
   chart: {
     type: "line",
-    height: 350,
+    height: props.type === 0 ? 510 : props.type === 1 ? 460 : 460,
     animations: {
       enabled: false,
       animateGradually: {
@@ -190,7 +226,7 @@ const downloadCsv = (customFilename?: string) => {
     showError("Motor is moving. Please stop it before downloading the CSV.");
     return;
   }
-  const points = series.value[0].data;
+  const points = seriesData.value;
   const header = 'Timestamp (ms),' + (props.type === 0 ? "Angle (deg)" : props.type === 1 ? "RPM" : "Flow (mL/min)") + '\n';
   const rows = points
   .map((p) => {
@@ -211,11 +247,12 @@ const downloadCsv = (customFilename?: string) => {
 
 const addPoints = (points: Array<{ x: number; y: number }>) => {
   series.value[0].data.push(...points);
-  fullSeries.value[0].data.push(...points);
-  if (series.value[0].data.length > maxDataPoints) {
+  //fullSeries.value[0].data.push(...points);
+    while (series.value[0].data.length > maxDataPoints) {
     series.value[0].data.shift();
   }
 };
+
 
 const setupWebSocket = () => {
   if (socket) {
@@ -231,12 +268,14 @@ const setupWebSocket = () => {
   socket.onmessage = (event) => {
   try {
     const msg = JSON.parse(event.data);
-
+    if (!msg.data) return;
+    if (msg.data[0].entry_id){
+      entryId.value = msg.data[0].entry_id;
+    }
     if (msg.type === "tilt") {
       const m = msg.data;
       addPoints(m.map((m: { time: number; angle: number }) => ({ x: Number(m.time), y: Number(m.angle) })));
     }
-
     if (msg.type === "rotate") {
       const m = msg.data;
         addPoints(m.map((m: { time: number; speed: number; direction: string }) => ({ x: Number(m.time), y: m.speed * (m.direction === 'cw' ? 1 : -1) })));

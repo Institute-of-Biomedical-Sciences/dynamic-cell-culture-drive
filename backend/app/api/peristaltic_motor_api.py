@@ -63,9 +63,6 @@ def compute_slope(
 ):
     """Compute calibration slope (flow rate per RPM) without saving."""
     try:
-        print(
-            f"Computing slope for duration: {request.duration}, low_rpm: {request.low_rpm}, high_rpm: {request.high_rpm}, low_rpm_volume: {request.low_rpm_volume}, high_rpm_volume: {request.high_rpm_volume}"
-        )
         slope = peristaltic_motor_handler._compute_slope(
             duration=request.duration,
             low_rpm=request.low_rpm,
@@ -116,7 +113,6 @@ def update_peristaltic_calibration(
 ):
     """Update a peristaltic calibration."""
     try:
-        print(calibration)
         success = peristaltic_motor_handler.update_peristaltic_calibration(calibration)
         return {"success": success, "message": "Peristaltic calibration updated."}
     except Exception as e:

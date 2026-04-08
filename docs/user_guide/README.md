@@ -96,6 +96,9 @@ In the **Real-time Tilt Movements** Section we can view the real-time tilt movem
 
 ![image](chart.png)
 
+> [!NOTE] Loading runs with long period durations (4+ hours) will reduce the number of measurements
+> on graph for saving computing power purposes. Download CSV for full list of measurements.
+
 By clicking on the **CSV** button above the movements chart, we can export the completed movements
 to csv file in desired filename format:
 
@@ -205,6 +208,9 @@ motor:
 - `movement` as number of running movement group.
 
 ![image](rotary-chart.png)
+
+> [!NOTE] Loading runs with long period durations (4+ hours) will reduce the number of measurements
+> on graph for saving computing power purposes. Download CSV for full list of measurements.
 
 By clicking on the **CSV** button above the movements chart, we can export the completed movements
 to csv file in desired filename format:
@@ -317,6 +323,9 @@ peristaltic motor:
 - `movement` as number of running movement group.
 
 ![image](peristaltic-chart.png)
+
+> [!NOTE] Loading runs with long period durations (4+ hours) will reduce the number of measurements
+> on graph for saving computing power purposes. Download CSV for full list of measurements.
 
 By clicking on the **CSV** button above the movements chart, we can export the completed movements
 to csv file in desired filename format:
@@ -512,6 +521,9 @@ entries of all three types (tilt, rotary, peristaltic). Each of the measurements
 to csv file after displaying it by pressing the **CSV** button.
 
 ![image](measurements-history.png)
+
+> [!NOTE] Loading runs with long period durations (4+ hours) will reduce the number of measurements
+> on graph for saving computing power purposes. Download CSV for full list of measurements.
 
 ## Workflow
 
